@@ -25,6 +25,31 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     },
     {
+      path: '/clientes',
+      name: 'clientes',
+      component: () => import('../views/ClienteView.vue')
+    },
+    {
+      path: '/usuarios',
+      name: 'usuarios',
+      component: () => import('../views/UsuarioView.vue')
+    },
+    {
+      path: '/empresas',
+      name: 'empresas',
+      component: () => import('../views/EmpresaView.vue')
+    },
+    {
+      path: '/empresas/:codigo',
+      name: 'empresas_detalhe',
+      component: () => import('../views/EmpresaDetalheView.vue')
+    },
+    {
+      path: '/empresas',
+      name: 'empresas_cadastrar',
+      component: () => import('../views/EmpresaDetalheView.vue')
+    },
+    {
       path: '/:catchAll(.*)*',
       name: 'PageNotFound',
       component: PageNotFound

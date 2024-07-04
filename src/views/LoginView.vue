@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Button, Form, FormItem, Input, InputPassword, Card } from 'ant-design-vue'
+import { Button, Form, FormItem, Input, InputPassword, Card, Alert } from 'ant-design-vue'
 import { UsuarioServiceKey } from '../service/UsuarioService'
 import { reactive, ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
@@ -9,6 +9,11 @@ const router = useRouter()
 const injected = inject(UsuarioServiceKey)!!
 
 const loading = ref<boolean>(false)
+
+const msgError = reactive<{ detail: string; description: string }>({
+  detail: '',
+  description: ''
+})
 
 interface FormState {
   email: string
@@ -20,8 +25,8 @@ const formState = reactive<FormState>({
   senha: '123456'
 })
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const onFinish = (values: FormState) => {
+  msgError.detail = ''
   loading.value = true
   injected
     .login(values.email, values.senha)
@@ -29,10 +34,16 @@ const onFinish = (values: FormState) => {
     .then(() => {
       router.push({ path: '/' })
     })
+    .catch((error) => {
+      msgError.detail = error.response.data.detail
+      msgError.description = error.response.data.description
+    })
 }
 
 const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo)
+  msgError.detail = ''
+  loading.value = false
 }
 
 const recuperarSenha = () => {}
@@ -76,6 +87,12 @@ const recuperarSenha = () => {}
         <FormItem>
           <Button type="primary" html-type="submit" :loading="loading">Logar</Button>
         </FormItem>
+        <Alert
+          v-if="msgError.detail"
+          :message="msgError.detail"
+          :description="msgError.description"
+          type="error"
+        />
       </Form>
     </Card>
   </main>
