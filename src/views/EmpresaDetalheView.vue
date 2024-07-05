@@ -57,7 +57,7 @@ onMounted(() => {
   <main>
     <Form
       :model="formState"
-      layout="horizontal"
+      layout="vertical"
       @finish="onFinish"
       @finishFailed="onFinishFailed"
       :validate-messages="validateMessages"
