@@ -16,4 +16,12 @@ export class EmpresaServiceImpl implements EmpresaService {
   obterCodigo(codigo: number): Promise<any> {
     return api.get(`/empresas/${codigo}`).then((response) => response.data)
   }
+
+  salvar(data: any): Promise<any> {
+    return api.post('/empresas', data).then((response) => response.data)
+  }
+
+  remover(codigo: number): Promise<any> {
+    return api.delete(`/empresas/${codigo}`).then((response) => response.data)
+  }
 }

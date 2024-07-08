@@ -7,37 +7,25 @@ import {
   UsuarioServiceImpl,
   EmpresaServiceImpl,
   CidadeServiceImpl,
-  BairroServiceImpl
+  BairroServiceImpl,
+  EstadoServiceImpl
 } from './service/impl/'
 import {
   UsuarioServiceKey,
   EmpresaServiceKey,
   CidadeServiceKey,
-  BairroServiceKey
+  BairroServiceKey,
+  EstadoServiceKey
 } from './service/'
-
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-
-import ptBr from 'element-plus/es/locale/lang/pt-br'
-import 'dayjs/locale/pt-br'
-
-//import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 const app = createApp(App)
 
 app.use(router)
 
-app.use(ElementPlus).use(ElementPlus, {
-  locale: ptBr
-})
-/* for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-  app.component(key, component)
-} */
-
 app.provide(UsuarioServiceKey, new UsuarioServiceImpl())
 app.provide(EmpresaServiceKey, new EmpresaServiceImpl())
 app.provide(CidadeServiceKey, new CidadeServiceImpl())
 app.provide(BairroServiceKey, new BairroServiceImpl())
+app.provide(EstadoServiceKey, new EstadoServiceImpl())
 
 app.mount('#app')

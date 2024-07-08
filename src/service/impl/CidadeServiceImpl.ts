@@ -6,4 +6,8 @@ export class CidadeServiceImpl implements CidadeService {
       .get('/cidades/pesquisarDescricao', { params: { descricao: descricao } })
       .then((response) => response.data)
   }
+
+  salvar(descricao: string, estado: number): Promise<any> {
+    return api.post('/cidades', { descricao, estado }).then((response) => response.data)
+  }
 }

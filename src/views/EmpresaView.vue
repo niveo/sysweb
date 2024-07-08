@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Drawer, Button, Form, FormItem, Input } from 'ant-design-vue'
 import { FilterOutlined, PlusOutlined } from '@ant-design/icons-vue'
 import { h, reactive, ref, inject, toRaw } from 'vue'
 import type { DrawerProps } from 'ant-design-vue'
@@ -47,34 +46,45 @@ function onIncluir() {
 <template>
   <main>
     <div style="display: flex; flex-direction: row; justify-content: space-between">
-      <Button type="primary" shape="circle" :icon="h(FilterOutlined)" @click="showDrawer"></Button>
-      <Button type="primary" shape="circle" :icon="h(PlusOutlined)" @click="onIncluir"></Button>
+      <a-button
+        type="primary"
+        shape="circle"
+        :icon="h(FilterOutlined)"
+        @click="showDrawer"
+      ></a-button>
+      <a-button type="primary" shape="circle" :icon="h(PlusOutlined)" @click="onIncluir"></a-button>
     </div>
 
-    <Drawer title="Filtros" :placement="placement" :closable="false" :open="open" @close="onClose">
+    <a-drawer
+      title="Filtros"
+      :placement="placement"
+      :closable="false"
+      :open="open"
+      @close="onClose"
+    >
       <template #extra>
-        <Button style="margin-right: 8px" @click="onClose">Sair</Button>
-        <Button type="primary" @click="onFiltrar">Filtrar</Button>
+        <a-button style="margin-right: 8px" @click="onClose">Sair</a-button>
+        <a-button type="primary" @click="onFiltrar">Filtrar</a-button>
       </template>
 
-      <Form :model="formState" name="basic" autocomplete="off" layout="vertical">
-        <FormItem label="Código" name="codigo">
-          <Input v-model:value="formState.codigo" />
-        </FormItem>
+      <a-form :model="formState" name="basic" autocomplete="off" layout="vertical">
+        <a-form-item label="Código" name="codigo">
+          <a-input v-model:value="formState.codigo" />
+        </a-form-item>
 
-        <FormItem label="Nome" name="nome">
-          <Input v-model:value="formState.nome" />
-        </FormItem>
+        <a-form-item label="Nome" name="nome">
+          <a-input v-model:value="formState.nome" />
+        </a-form-item>
 
-        <FormItem label="Razão Social" name="razaoSocial">
-          <Input v-model:value="formState.razaoSocial" />
-        </FormItem>
+        <a-form-item label="Razão Social" name="razaoSocial">
+          <a-input v-model:value="formState.razaoSocial" />
+        </a-form-item>
 
-        <FormItem label="CNPJ / CPF" name="documento">
-          <Input v-model:value="formState.documento" />
-        </FormItem>
-      </Form>
-    </Drawer>
+        <a-form-item label="CNPJ / CPF" name="documento">
+          <a-input v-model:value="formState.documento" />
+        </a-form-item>
+      </a-form>
+    </a-drawer>
     <EmpresaLista :page="page" />
   </main>
 </template>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, inject, toRaw, defineProps, defineEmits } from 'vue'
-import { Search, CirclePlus } from '@element-plus/icons-vue'
+import { ref, inject, toRaw, defineEmits, watch } from 'vue'
 import { BairroServiceKey } from '@/service'
-import { debounce } from '@/common/utils'
+import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons-vue'
+
 defineProps({
   registro: {
     type: Object,
@@ -13,51 +13,75 @@ const emit = defineEmits(['outRegistro'])
 
 const service = inject(BairroServiceKey)!!
 
-const dialogVisible = ref(false)
-const valorPesquisa = ref()
-const gridData = ref<any[]>([])
+const dialogPesquisaVisible = ref(false)
+const dialogCadastroVisible = ref(false)
+const valorPesquisa = ref('')
+const dataSource = ref<any[]>([])
 
-const valueChanged = debounce(() => {
+const columns = [{ title: 'Descrição', dataIndex: 'descricao', key: 'descricao' }]
+
+watch(valorPesquisa, () => {
   service.pesquisarDescricao(valorPesquisa.value).then((data) => {
-    gridData.value = data
+    dataSource.value = data
   })
-}, 500)
+})
 
-function onRowSelected(e) {
+function onRowSelected(e: any) {
   emit('outRegistro', toRaw(e))
-  dialogVisible.value = false
-}
-
-function onCarregarDialog() {
-  dialogVisible.value = true
-  setTimeout(() => {
-    const node = document.getElementsByClassName('el-dialog__body')!!.item(0)
-    if (node) node!!.classList.add('el-dialog__content')
-  }, 300)
+  dialogCadastroVisible.value = false
+  dialogPesquisaVisible.value = false
 }
 </script>
 
 <template>
-  <el-input :value="registro?.descricao" readonly :suffix-icon="Search" @click="onCarregarDialog" />
-  <el-dialog v-model="dialogVisible" fullscreen class="el-dialog__content">
-    <template #header><span style="padding: 10px">Pesquisa Bairro</span></template>
-    <div class="el-dialog__content">
+  <a-input :value="registro?.descricao" readonly @click="dialogPesquisaVisible = true">
+    <template #suffix>
+      <SearchOutlined />
+    </template>
+  </a-input>
+
+  <a-modal v-model:open="dialogPesquisaVisible" title="Pesquisa Bairro" :footer="null">
+    <div>
       <div style="padding: 5px; display: flex; flex-direction: row; gap: 5px">
-        <el-input v-model="valorPesquisa" :suffix-icon="Search" @input="valueChanged" />
-        <el-button type="primary" :icon="CirclePlus" circle />
+        <a-input v-model:value.lazy="valorPesquisa" autofocus>
+          <template #suffix>
+            <SearchOutlined />
+          </template>
+        </a-input>
+
+        <a-tooltip>
+          <template #title>
+            <span>Cadastrar Bairro</span>
+          </template>
+          <a-button type="primary" @click="dialogCadastroVisible = true">
+            <template #icon>
+              <PlusCircleOutlined />
+            </template>
+          </a-button>
+        </a-tooltip>
       </div>
-      <div class="el-dialog__content_table">
-        <el-table
-          :data="gridData"
-          row-key="codigo"
-          @row-click="onRowSelected"
-          style="cursor: pointer"
+      <div>
+        <a-table
+          :dataSource="dataSource"
+          :columns="columns"
+          @selection="onRowSelected"
+          :pagination="{ pageSize: 4 }"
         >
-          <el-table-column prop="descricao" label="Bairro"> </el-table-column>
-        </el-table>
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.key === 'descricao'">
+              <span @click="onRowSelected(record)" style="cursor: pointer">
+                {{ record.descricao }}</span
+              >
+            </template>
+          </template>
+        </a-table>
       </div>
     </div>
-  </el-dialog>
+  </a-modal>
+
+  <a-modal v-model:open="dialogCadastroVisible" title="Bairro" :footer="null">
+    <CadastroBairro @outRegistro="onRowSelected" />
+  </a-modal>
 </template>
 
 <style scoped></style>

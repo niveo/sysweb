@@ -6,4 +6,8 @@ export class BairroServiceImpl implements BairroService {
       .get('/bairros/pesquisarDescricao', { params: { descricao: descricao } })
       .then((response) => response.data)
   }
+
+  salvar(descricao: string): Promise<any> {
+    return api.post('/bairros', { descricao }).then((response) => response.data)
+  }
 }

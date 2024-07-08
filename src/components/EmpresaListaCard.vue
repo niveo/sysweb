@@ -1,37 +1,43 @@
 <script setup lang="ts">
-import { Card, Descriptions, DescriptionsItem, Button, Popover } from 'ant-design-vue'
+import { EmpresaServiceKey } from '@/service'
 import { EditOutlined, MoreOutlined } from '@ant-design/icons-vue'
-import { h } from 'vue'
+import { h, inject } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const prop = defineProps<{
   model: any
 }>()
+const service = inject(EmpresaServiceKey)!!
 
 function onEditar() {
   router.push({ name: 'empresas_detalhe', params: { codigo: prop.model.codigo } })
 }
+
+function removerRegistro() {
+  console.log('removerRegistro')
+  service.remover(prop.model.codigo).then(console.log).catch(console.error)
+}
 </script>
 
 <template>
-  <Card :bodyStyle="{ padding: '1px' }">
-    <Descriptions layout="vertical" bordered>
-      <DescriptionsItem label="CNPJ / CPF">
+  <a-card :bodyStyle="{ padding: '1px' }">
+    <a-descriptions layout="vertical" bordered>
+      <a-descriptions-item label="CNPJ / CPF">
         {{ model.documento }}
-      </DescriptionsItem>
-      <DescriptionsItem label="IE" v-if="model.inscricaoEstadual">
+      </a-descriptions-item>
+      <a-descriptions-item label="IE" v-if="model.inscricaoEstadual">
         {{ model.inscricaoEstadual }}
-      </DescriptionsItem>
-      <DescriptionsItem label="Razão Social">
+      </a-descriptions-item>
+      <a-descriptions-item label="Razão Social">
         {{ model.razaoSocial }}
-      </DescriptionsItem>
-      <DescriptionsItem label="Telefone" v-if="model.telefone">
+      </a-descriptions-item>
+      <a-descriptions-item label="Telefone" v-if="model.telefone">
         {{ model.telefone }}
-      </DescriptionsItem>
-      <DescriptionsItem label="E-mail" v-if="model.email">
+      </a-descriptions-item>
+      <a-descriptions-item label="E-mail" v-if="model.email">
         {{ model.email }}
-      </DescriptionsItem>
-    </Descriptions>
+      </a-descriptions-item>
+    </a-descriptions>
     <template #actions>
       <EditOutlined key="edit" @click="onEditar()" />
     </template>
@@ -39,14 +45,21 @@ function onEditar() {
       {{ model.codigo + ' - ' + model.nome }}
     </template>
     <template #extra>
-      <Popover trigger="click">
+      <a-popover trigger="click">
         <template #content>
-          <Button type="link" danger>Excluir</Button>
+          <a-popconfirm
+            title="Deseja remover o registro selecionado?"
+            ok-text="Sim"
+            cancel-text="Não"
+            @confirm="removerRegistro"
+          >
+            <a-button type="link" danger>Excluir</a-button>
+          </a-popconfirm>
         </template>
-        <Button :icon="h(MoreOutlined)"></Button>
-      </Popover>
+        <a-button :icon="h(MoreOutlined)"></a-button>
+      </a-popover>
     </template>
-  </Card>
+  </a-card>
 </template>
 
 <style scoped></style>

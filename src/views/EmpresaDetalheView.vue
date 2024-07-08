@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { reactive, computed, h, onMounted, inject, ref } from 'vue'
-import { Check } from '@element-plus/icons-vue'
+import { reactive, computed, h, onMounted, inject, ref, toRaw } from 'vue'
 import { vMaska } from 'maska/vue'
+import { SaveOutlined } from '@ant-design/icons-vue'
 import { EmpresaServiceKey } from '@/service'
 import PesquisaCidade from '../components/PesquisaCidade.vue'
 import PesquisaBairro from '../components/PesquisaBairro.vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import { validateMessagesForm } from '@/common/utils'
 const route = useRoute()
 const empresaService = inject(EmpresaServiceKey)!!
 
@@ -20,65 +20,48 @@ interface FormState {
   inscricaoEstadual?: string
   tipoPessoa: string
   observacao?: string
-  logradouro?: string
-  numero?: string
-  cep?: string
-  complemento?: string
-  cidade?: {
-    codigo?: number
-    descricao?: string
-  }
-  bairro?: {
-    codigo?: number
-    descricao?: string
+  endereco: {
+    logradouro?: string
+    numero?: string
+    cep?: string
+    complemento?: string
+    cidade?: {
+      codigo?: number
+      descricao?: string
+    }
+    bairro?: {
+      codigo?: number
+      descricao?: string
+    }
   }
 }
 
 const formState = reactive<FormState>({
-  tipoPessoa: 'JURIDICA'
+  codigo: 0,
+  tipoPessoa: 'JURIDICA',
+  endereco: {}
 })
 
-const ruleFormRef = ref<FormInstance>()
+let codigoRegistro = ref()
 
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  await formEl.validate((valid, fields) => {
-    if (valid) {
-      console.log('submit!', valid)
-    } else {
-      console.log('error submit!', fields)
-    }
-  })
+const onFinish = (values: FormState) => {
+  console.log(values)
+
+  empresaService
+    .salvar(Object.assign({ codigo: codigoRegistro.value }, toRaw(values)))
+    .then((data) => {
+      codigoRegistro.value = data.codigo
+    })
+    .catch(console.error)
 }
 
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
-}
-
-const baiscRules = (name: string) => {
-  return [
-    { required: true, message: 'Informe o ' + name, trigger: 'blur' },
-    { min: 3, max: 255, message: 'Length should be 3 to 255', trigger: 'blur' }
-  ]
-}
-
-const rules = reactive<FormRules<FormState>>({
-  nome: baiscRules('Nome'),
-  razaoSocial: baiscRules('Razão Social'),
-  documento: [{ required: true, message: 'Informe o CNPJ', trigger: 'blur' }],
-  email: [{ type: 'email', message: 'Informe um e-mail valido', trigger: ['blur', 'change'] }],
-  logradouro: baiscRules('Logradouro'),
-  numero: baiscRules('Número'),
-  cep: baiscRules('CEP')
-})
+const onFinishFailed = (errorInfo: any) => {}
 
 onMounted(() => {
   const codigo = route.params['codigo']
   if (codigo)
-    empresaService.obterCodigo(codigo).then((data) => {
-      console.log(data)
-
+    empresaService.obterCodigo(Number(codigo)).then((data) => {
+      codigoRegistro.value = data.codigo
       formState.codigo = data.codigo
       formState.nome = data.nome
       formState.razaoSocial = data.razaoSocial
@@ -91,112 +74,122 @@ onMounted(() => {
       formState.tipoPessoa = data.tipoPessoa
 
       if (data.endereco) {
-        formState.logradouro = data.endereco.logradouro
-        formState.numero = data.endereco.numero
-        formState.cep = data.endereco.cep
-        formState.complemento = data.endereco.complemento
-        formState.cidade = {
-          codigo: data.endereco.cidade?.codigo,
-          descricao: data.endereco.cidade?.descricao
-        }
+        formState.endereco = data.endereco
       }
     })
 })
 
+const validateMessages = validateMessagesForm
+
 const isTipoJuridico = computed(() => formState.tipoPessoa == 'JURIDICA')
 
 const onCidade = (cidade: any) => {
-  formState.cidade = cidade
+  formState.endereco!!.cidade = cidade
 }
 const onBairro = (bairro: any) => {
-  formState.bairro = bairro
+  formState.endereco!!.bairro = bairro
 }
 </script>
 
 <template>
   <main>
-    <el-form :model="formState" ref="ruleFormRef" :rules="rules" label-position="top" status-icon>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm(ruleFormRef)" :icon="Check">Salvar</el-button>
-        <el-button @click="resetForm(ruleFormRef)">Limpar</el-button>
-      </el-form-item>
+    <a-form
+      layout="vertical"
+      :model="formState"
+      @finish="onFinish"
+      @finishFailed="onFinishFailed"
+      :validate-messages="validateMessages"
+    >
+      <a-form-item>
+        <a-button type="primary" html-type="submit" :icon="h(SaveOutlined)">Salvar</a-button>
+      </a-form-item>
 
-      <el-form-item label="Tipo" prop="tipo">
-        <el-radio-group v-model="formState.tipoPessoa">
-          <el-radio value="JURIDICA" :checked="true">Jurídica</el-radio>
-          <el-radio value="FISICA">Fisica</el-radio>
-        </el-radio-group>
-      </el-form-item>
+      <a-form-item label="Tipo" name="tipoPessoa">
+        <a-radio-group v-model:value="formState.tipoPessoa">
+          <a-radio value="JURIDICA" :checked="true">Jurídica</a-radio>
+          <a-radio value="FISICA">Fisica</a-radio>
+        </a-radio-group>
+      </a-form-item>
 
-      <el-form-item :label="isTipoJuridico ? 'CNPJ' : 'CPF'" prop="documento">
-        <el-input
-          v-model="formState.documento"
+      <a-form-item
+        :label="isTipoJuridico ? 'CNPJ' : 'CPF'"
+        name="documento"
+        :rules="[{ required: true }]"
+      >
+        <a-input
+          v-model:value="formState.documento"
           v-maska="isTipoJuridico ? '##.###.###/####-##' : '###.###.###-##'"
           :maxlength="isTipoJuridico ? 18 : 14"
         />
-      </el-form-item>
+      </a-form-item>
 
-      <el-form-item label="IE" prop="inscricaoEstadual">
-        <el-input v-model="formState.inscricaoEstadual" :maxlength="15" />
-      </el-form-item>
+      <a-form-item label="IE" name="inscricaoEstadual">
+        <a-input v-model:value="formState.inscricaoEstadual" :maxlength="15" />
+      </a-form-item>
 
-      <el-form-item label="Nome" prop="nome">
-        <el-input v-model="formState.nome" :maxlength="255" />
-      </el-form-item>
+      <a-form-item label="Nome" name="nome" :rules="[{ required: true }]">
+        <a-input v-model:value="formState.nome" :maxlength="255" />
+      </a-form-item>
 
-      <el-form-item label="Razão Social" prop="razaoSocial">
-        <el-input v-model="formState.razaoSocial" :maxlength="255" />
-      </el-form-item>
+      <a-form-item label="Razão Social" name="razaoSocial" :rules="[{ required: true }]">
+        <a-input v-model:value="formState.razaoSocial" :maxlength="255" />
+      </a-form-item>
 
-      <el-form-item label="Telefone" prop="telefone">
-        <el-input v-model="formState.telefone" :maxlength="15" />
-      </el-form-item>
+      <a-form-item label="Telefone" name="telefone">
+        <a-input v-model:value="formState.telefone" :maxlength="15" />
+      </a-form-item>
 
-      <el-form-item label="E-mail" prop="email">
-        <el-input v-model="formState.email" :maxlength="100" />
-      </el-form-item>
+      <a-form-item label="E-mail" name="email">
+        <a-input v-model:value="formState.email" :maxlength="100" />
+      </a-form-item>
 
-      <el-form-item label="Observação" prop="observacao">
-        <el-input
-          v-model="formState.observacao"
+      <a-form-item label="Observação" name="observacao">
+        <a-textarea
+          v-model:value="formState.observacao"
           :rows="4"
           :maxlength="255"
           type="textarea"
-        ></el-input>
-      </el-form-item>
+        ></a-textarea>
+      </a-form-item>
 
-      <el-col class="text-center" :span="2">
-        <span class="text-gray-500"> <h5>Endereço</h5></span>
-      </el-col>
+      <h5>Endereço</h5>
 
-      <el-form-item label="CEP" prop="cep">
-        <el-input v-model="formState.cep" :maxlength="9" v-maska="'#####-###'" />
-      </el-form-item>
+      <a-form-item label="CEP" :name="['endereco', 'cep']" :rules="[{ required: true }]">
+        <a-input v-model:value="formState.endereco.cep" :maxlength="9" v-maska="'#####-###'" />
+      </a-form-item>
 
-      <el-form-item label="Logradouro" prop="logradouro">
-        <el-input v-model="formState.logradouro" :maxlength="255" />
-      </el-form-item>
+      <a-form-item
+        label="Logradouro"
+        :name="['endereco', 'logradouro']"
+        :rules="[{ required: true }]"
+      >
+        <a-input v-model:value="formState.endereco.logradouro" :maxlength="255" />
+      </a-form-item>
 
-      <el-form-item label="Número" prop="numero">
-        <el-input v-model="formState.numero" :maxlength="15" />
-      </el-form-item>
+      <a-form-item label="Número" :name="['endereco', 'numero']" :rules="[{ required: true }]">
+        <a-input v-model:value="formState.endereco.numero" :maxlength="15" />
+      </a-form-item>
 
-      <el-form-item label="Cidade" prop="cidade">
-        <PesquisaCidade :registro="formState.cidade" @outRegistro="onCidade" />
-      </el-form-item>
+      <a-form-item label="Cidade" :name="['endereco', 'cidade']" :rules="[{ required: true }]">
+        <PesquisaCidade :registro="formState.endereco.cidade" @outRegistro="onCidade" />
+      </a-form-item>
 
-      <el-form-item label="Bairro" prop="bairro">
-        <PesquisaBairro :registro="formState.bairro" @outRegistro="onBairro" />
-      </el-form-item>
+      <a-form-item label="Bairro" :name="['endereco', 'bairro']" :rules="[{ required: true }]">
+        <PesquisaBairro :registro="formState.endereco.bairro" @outRegistro="onBairro" />
+      </a-form-item>
 
-      <el-form-item label="Complemento" prop="complemento">
-        <el-input
-          v-model="formState.complemento"
+      <a-form-item label="Complemento" :name="['endereco', 'complemento']">
+        <a-textarea
+          v-model:value="formState.endereco.complemento"
           :rows="4"
           :maxlength="255"
           type="textarea"
-        ></el-input>
-      </el-form-item>
-    </el-form>
+        ></a-textarea>
+      </a-form-item>
+
+      <a-form-item>
+        <a-button type="primary" html-type="submit" :icon="h(SaveOutlined)">Salvar</a-button>
+      </a-form-item>
+    </a-form>
   </main>
 </template>
