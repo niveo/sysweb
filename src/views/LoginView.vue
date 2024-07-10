@@ -10,10 +10,7 @@ const injected = inject(UsuarioServiceKey)!!
 
 const loading = ref<boolean>(false)
 
-const msgError = reactive<{ detail: string; description: string }>({
-  detail: '',
-  description: ''
-})
+const msgError = ref()
 
 interface FormState {
   email: string
@@ -26,7 +23,7 @@ const formState = reactive<FormState>({
 })
 
 const onFinish = (values: FormState) => {
-  msgError.detail = ''
+  msgError.value = ''
   loading.value = true
   injected
     .login(values.email, values.senha)
@@ -35,14 +32,18 @@ const onFinish = (values: FormState) => {
       router.push({ path: '/' })
     })
     .catch((error) => {
-      msgError.detail = error.response.data.detail
-      msgError.description = error.response.data.description
+      console.error(error)
+      if (error.response?.data) {
+        msgError.value = error.response.data.detail
+      } else {
+        msgError.value = error.message
+      }
     })
 }
 
 const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo)
-  msgError.detail = ''
+  msgError.value = ''
   loading.value = false
 }
 
@@ -87,12 +88,7 @@ const recuperarSenha = () => {}
         <FormItem>
           <Button type="primary" html-type="submit" :loading="loading">Logar</Button>
         </FormItem>
-        <Alert
-          v-if="msgError.detail"
-          :message="msgError.detail"
-          :description="msgError.description"
-          type="error"
-        />
+        <a-alert v-if="msgError" :description="msgError" type="error" />
       </Form>
     </Card>
   </main>

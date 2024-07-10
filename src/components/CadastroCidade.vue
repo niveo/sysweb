@@ -45,6 +45,7 @@ onMounted(() => {
 <template>
   <main>
     <a-form
+      layout="vertical"
       :model="formState"
       name="basic"
       autocomplete="off"

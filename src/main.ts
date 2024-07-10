@@ -8,14 +8,18 @@ import {
   EmpresaServiceImpl,
   CidadeServiceImpl,
   BairroServiceImpl,
-  EstadoServiceImpl
+  EstadoServiceImpl,
+  NotificationServiceImpl,
+  CepServiceImpl
 } from './service/impl/'
 import {
   UsuarioServiceKey,
   EmpresaServiceKey,
   CidadeServiceKey,
   BairroServiceKey,
-  EstadoServiceKey
+  EstadoServiceKey,
+  NotificationServiceKey,
+  CepServiceKey
 } from './service/'
 
 const app = createApp(App)
@@ -27,5 +31,7 @@ app.provide(EmpresaServiceKey, new EmpresaServiceImpl())
 app.provide(CidadeServiceKey, new CidadeServiceImpl())
 app.provide(BairroServiceKey, new BairroServiceImpl())
 app.provide(EstadoServiceKey, new EstadoServiceImpl())
+app.provide(NotificationServiceKey, new NotificationServiceImpl())
+app.provide(CepServiceKey, new CepServiceImpl())
 
 app.mount('#app')

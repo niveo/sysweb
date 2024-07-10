@@ -17,17 +17,22 @@ const dialogPesquisaVisible = ref(false)
 const dialogCadastroVisible = ref(false)
 const valorPesquisa = ref('')
 const dataSource = ref<any[]>([])
+const loadingPesquisa = ref(false)
 
 const columns = [
   { title: 'Descrição', dataIndex: 'descricao', key: 'descricao' },
   { title: 'Estado', dataIndex: 'estado', key: 'estado' }
 ]
 
-watch(valorPesquisa, () => {
-  service.pesquisarDescricao(valorPesquisa.value).then((data) => {
-    dataSource.value = data
-  })
-})
+function onPesquisar(value: string) {
+  loadingPesquisa.value = true
+  service
+    .pesquisarDescricao(value)
+    .then((data) => {
+      dataSource.value = data
+    })
+    .finally(() => (loadingPesquisa.value = false))
+}
 
 function onRowSelected(e: any) {
   emit('outRegistro', toRaw(e))
@@ -51,11 +56,14 @@ function onRowSelected(e: any) {
   <a-modal v-model:open="dialogPesquisaVisible" title="Pesquisa Cidade" :footer="null">
     <div>
       <div style="padding: 5px; display: flex; flex-direction: row; gap: 5px">
-        <a-input v-model:value.lazy="valorPesquisa" autofocus>
-          <template #suffix>
-            <SearchOutlined />
-          </template>
-        </a-input>
+        <a-input-search
+          v-model:value="valorPesquisa"
+          autofocus
+          :loading="loadingPesquisa"
+          enter-button
+          @search="onPesquisar"
+        >
+        </a-input-search>
 
         <a-tooltip>
           <template #title>

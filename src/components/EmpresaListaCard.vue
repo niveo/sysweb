@@ -3,10 +3,13 @@ import { EmpresaServiceKey } from '@/service'
 import { EditOutlined, MoreOutlined } from '@ant-design/icons-vue'
 import { h, inject } from 'vue'
 import { useRouter } from 'vue-router'
+import { notification } from 'ant-design-vue'
+
 const router = useRouter()
 const prop = defineProps<{
   model: any
 }>()
+const emit = defineEmits(['outRegistroRemovido'])
 const service = inject(EmpresaServiceKey)!!
 
 function onEditar() {
@@ -14,8 +17,15 @@ function onEditar() {
 }
 
 function removerRegistro() {
-  console.log('removerRegistro')
-  service.remover(prop.model.codigo).then(console.log).catch(console.error)
+  service
+    .remover(prop.model.codigo)
+    .then(() => emit('outRegistroRemovido', prop.model.codigo))
+    .catch((error: any) => {
+      notification.error({
+        message: 'Erro',
+        description: error.response.data.properties.description
+      })
+    })
 }
 </script>
 

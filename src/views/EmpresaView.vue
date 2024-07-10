@@ -85,6 +85,6 @@ function onIncluir() {
         </a-form-item>
       </a-form>
     </a-drawer>
-    <EmpresaLista :page="page" />
+    <EmpresaLista :page="page" @outRegistroRemovido="onFiltrar" />
   </main>
 </template>

@@ -3,12 +3,16 @@ import { useRoute } from 'vue-router'
 import { reactive, computed, h, onMounted, inject, ref, toRaw } from 'vue'
 import { vMaska } from 'maska/vue'
 import { SaveOutlined } from '@ant-design/icons-vue'
-import { EmpresaServiceKey } from '@/service'
+import { CepServiceKey, EmpresaServiceKey, NotificationServiceKey } from '@/service'
 import PesquisaCidade from '../components/PesquisaCidade.vue'
 import PesquisaBairro from '../components/PesquisaBairro.vue'
 import { validateMessagesForm } from '@/common/utils'
+import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '@/common/constantes'
+
 const route = useRoute()
 const empresaService = inject(EmpresaServiceKey)!!
+const cepService = inject(CepServiceKey)!!
+const notification = inject(NotificationServiceKey)!!
 
 interface FormState {
   codigo?: number
@@ -43,16 +47,25 @@ const formState = reactive<FormState>({
 })
 
 let codigoRegistro = ref()
+let loadingPesquisaCep = ref(false)
 
 const onFinish = (values: FormState) => {
-  console.log(values)
-
   empresaService
     .salvar(Object.assign({ codigo: codigoRegistro.value }, toRaw(values)))
     .then((data) => {
       codigoRegistro.value = data.codigo
+      notification.success({
+        description: MSG_REGISTRO_SALVO_SUCESSO
+      })
     })
-    .catch(console.error)
+    .catch((error) => {
+      console.error(error)
+      notification.error({
+        message: 'Erro',
+        description: MSG_REGISTRO_SALVAR_ERRO,
+        error: error
+      })
+    })
 }
 
 const onFinishFailed = (errorInfo: any) => {}
@@ -88,6 +101,27 @@ const onCidade = (cidade: any) => {
 }
 const onBairro = (bairro: any) => {
   formState.endereco!!.bairro = bairro
+}
+
+function onPesquisarCep(cep: string) {
+  loadingPesquisaCep.value = true
+  cepService
+    .pesquisar(cep)
+    .then((data) => {
+      if (data) {
+        formState.endereco.logradouro = data.logradouro
+        formState.endereco.cidade = data.cidade
+        formState.endereco.bairro = data.bairro
+      }
+    })
+    .catch((error) => {
+      notification.error({
+        message: 'Erro',
+        description: MSG_REGISTRO_SALVAR_ERRO,
+        error: error
+      })
+    })
+    .finally(() => (loadingPesquisaCep.value = false))
 }
 </script>
 
@@ -155,7 +189,14 @@ const onBairro = (bairro: any) => {
       <h5>Endereço</h5>
 
       <a-form-item label="CEP" :name="['endereco', 'cep']" :rules="[{ required: true }]">
-        <a-input v-model:value="formState.endereco.cep" :maxlength="9" v-maska="'#####-###'" />
+        <a-input-search
+          v-model:value="formState.endereco.cep"
+          :maxlength="9"
+          v-maska="'#####-###'"
+          :loading="loadingPesquisaCep"
+          enter-button
+          @search="onPesquisarCep"
+        />
       </a-form-item>
 
       <a-form-item
