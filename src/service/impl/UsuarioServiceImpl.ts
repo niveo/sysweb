@@ -28,4 +28,9 @@ export class UsuarioServiceImpl implements UsuarioService {
 
   private isSessaoExpirou = () =>
     this.tempoSessaoToken ? dayjs(this.tempoSessaoToken!!).isBefore(new Date()) : false
+
+  async empresas(): Promise<{ codigo: number; documento: string; nome: string }[]> {
+    const response = await api.get('/usuarios/empresas')
+    return response.data
+  }
 }

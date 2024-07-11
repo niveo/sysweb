@@ -1,4 +1,5 @@
 export * from './EmpresaServiceImpl'
+export * from './ClienteServiceImpl'
 export * from './UsuarioServiceImpl'
 export * from './CidadeServiceImpl'
 export * from './BairroServiceImpl'

@@ -4,11 +4,10 @@ import { h, reactive, ref, inject, toRaw } from 'vue'
 import type { DrawerProps } from 'ant-design-vue'
 import { EmpresaServiceKey } from '../service'
 import type { PagedModel } from '../model/PagedModel'
-import EmpresaLista from '../components/EmpresaLista.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const empresaService = inject(EmpresaServiceKey)!!
+const service = inject(EmpresaServiceKey)!!
 const open = ref<boolean>(true)
 const placement = ref<DrawerProps['placement']>('left')
 const page = reactive<PagedModel>({})
@@ -32,7 +31,7 @@ const formState = reactive<FormState>({})
 
 const onFiltrar = () => {
   onClose()
-  empresaService.obterTodos(toRaw(formState)).then((response) => {
+  service.obterTodos(toRaw(formState)).then((response) => {
     page.page = response.page
     page.content = response.content
   })

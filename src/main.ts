@@ -10,7 +10,8 @@ import {
   BairroServiceImpl,
   EstadoServiceImpl,
   NotificationServiceImpl,
-  CepServiceImpl
+  CepServiceImpl,
+  ClienteServiceImpl
 } from './service/impl/'
 import {
   UsuarioServiceKey,
@@ -19,7 +20,8 @@ import {
   BairroServiceKey,
   EstadoServiceKey,
   NotificationServiceKey,
-  CepServiceKey
+  CepServiceKey,
+  ClienteServiceKey
 } from './service/'
 
 const app = createApp(App)
@@ -28,6 +30,7 @@ app.use(router)
 
 app.provide(UsuarioServiceKey, new UsuarioServiceImpl())
 app.provide(EmpresaServiceKey, new EmpresaServiceImpl())
+app.provide(ClienteServiceKey, new ClienteServiceImpl())
 app.provide(CidadeServiceKey, new CidadeServiceImpl())
 app.provide(BairroServiceKey, new BairroServiceImpl())
 app.provide(EstadoServiceKey, new EstadoServiceImpl())

@@ -2,14 +2,14 @@
 import { useRoute, useRouter } from 'vue-router'
 import { reactive, computed, h, onMounted, inject, ref, toRaw } from 'vue'
 import { vMaska } from 'maska/vue'
-import { SaveOutlined } from '@ant-design/icons-vue'
-import { CepServiceKey, EmpresaServiceKey, NotificationServiceKey } from '@/service'
-import { validateMessagesForm } from '@/common/utils'
+import { SaveOutlined, PlusCircleOutlined } from '@ant-design/icons-vue'
+import { CepServiceKey, ClienteServiceKey, NotificationServiceKey } from '@/service'
+import { lancarPaginaErro, validateMessagesForm } from '@/common/utils'
 import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '@/common/constantes'
 
-const route = useRoute()
 const router = useRouter()
-const empresaService = inject(EmpresaServiceKey)!!
+const route = useRoute()
+const clienteService = inject(ClienteServiceKey)!!
 const cepService = inject(CepServiceKey)!!
 const notification = inject(NotificationServiceKey)!!
 
@@ -23,6 +23,8 @@ interface FormState {
   inscricaoEstadual?: string
   tipoPessoa: string
   observacao?: string
+  contatos?: any
+  enderecos?: any
   endereco: {
     logradouro?: string
     numero?: string
@@ -49,7 +51,7 @@ let codigoRegistro = ref()
 let loadingPesquisaCep = ref(false)
 
 const onFinish = (values: FormState) => {
-  empresaService
+  clienteService
     .salvar(Object.assign({ codigo: codigoRegistro.value }, toRaw(values)))
     .then((data) => {
       codigoRegistro.value = data.codigo
@@ -72,7 +74,7 @@ const onFinishFailed = (errorInfo: any) => {}
 onMounted(() => {
   const codigo = route.params['codigo']
   if (codigo)
-    empresaService
+    clienteService
       .obterCodigo(Number(codigo))
       .then((data) => {
         codigoRegistro.value = data.codigo
@@ -85,13 +87,16 @@ onMounted(() => {
         formState.telefone = data.telefone
         formState.email = data.email
         formState.tipoPessoa = data.tipoPessoa
+        formState.contatos = data.contatos
+        formState.enderecos = data.enderecos
 
         if (data.endereco) {
           formState.endereco = data.endereco
         }
       })
       .catch((error) => {
-        router.push({ name: 'error', params: { error: error } })
+        console.error(error)
+        lancarPaginaErro(router, error)
       })
 })
 
@@ -125,6 +130,14 @@ function onPesquisarCep(cep: string) {
       })
     })
     .finally(() => (loadingPesquisaCep.value = false))
+}
+
+function handleNovoContato(event: MouseEvent) {
+  event.stopPropagation()
+}
+
+function handleNovoEndereco(event: MouseEvent) {
+  event.stopPropagation()
 }
 </script>
 
@@ -230,6 +243,29 @@ function onPesquisarCep(cep: string) {
           type="textarea"
         ></a-textarea>
       </a-form-item>
+
+      <a-collapse>
+        <a-collapse-panel key="1" header="Contatos">
+          <template #extra>
+            <a-button
+              @click="handleNovoContato"
+              :icon="h(PlusCircleOutlined)"
+              type="primary"
+            ></a-button>
+          </template>
+          <ClienteListaContato :registros="formState.enderecos" />
+        </a-collapse-panel>
+        <a-collapse-panel key="2" header="Endereços">
+          <template #extra>
+            <a-button
+              @click="handleNovoEndereco"
+              :icon="h(PlusCircleOutlined)"
+              type="primary"
+            ></a-button>
+          </template>
+          <ClienteListaEndereco :registros="formState.enderecos" />
+        </a-collapse-panel>
+      </a-collapse>
 
       <a-form-item>
         <a-button type="primary" html-type="submit" :icon="h(SaveOutlined)">Salvar</a-button>

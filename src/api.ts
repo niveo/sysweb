@@ -6,6 +6,9 @@ api.interceptors.request.use(
   (config) => {
     const token = sessionStorage.getItem('TOKEN')
     if (token) config.headers.Authorization = `Bearer ${token}`
+
+    const empresa = localStorage.getItem('EMPRESA')
+    if (empresa) config.headers.set('empresa', empresa)
     return config
   },
   (error) => {

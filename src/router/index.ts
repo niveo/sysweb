@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
+import PageError from '@/views/PageError.vue'
 
 import { inject } from 'vue'
 import { UsuarioServiceKey } from '@/service/UsuarioService'
@@ -30,6 +31,16 @@ const router = createRouter({
       component: () => import('../views/ClienteView.vue')
     },
     {
+      path: '/clientes/:codigo',
+      name: 'clientes_detalhe',
+      component: () => import('../views/ClienteDetalheView.vue')
+    },
+    {
+      path: '/clientes',
+      name: 'clientes_cadastrar',
+      component: () => import('../views/ClienteDetalheView.vue')
+    },
+    {
       path: '/usuarios',
       name: 'usuarios',
       component: () => import('../views/UsuarioView.vue')
@@ -53,6 +64,11 @@ const router = createRouter({
       path: '/:catchAll(.*)*',
       name: 'PageNotFound',
       component: PageNotFound
+    },
+    {
+      path: '/error',
+      name: 'error',
+      component: PageError
     }
   ]
 })

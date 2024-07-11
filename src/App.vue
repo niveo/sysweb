@@ -40,16 +40,19 @@ const navTo = (rota: string) => {
       ></Button>
       <Popover v-model:open="openLaunch" trigger="click">
         <template #content>
-          <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 5px">
-            <button
-              class="menuModuloButton"
-              @click="navTo(item.rota)"
-              v-for="item in listaModulos"
-              :key="item.descricao"
-            >
-              <component :is="item.icone" :style="{ fontSize: '34px', color: '#08c' }" />
-              <span class="menuModuloTxt">{{ item.descricao }}</span>
-            </button>
+          <div style="display: flex; flex-direction: column; gap: 5px">
+            <EmpresasUsuarioSelecao />
+            <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 5px">
+              <button
+                class="menuModuloButton"
+                @click="navTo(item.rota)"
+                v-for="item in listaModulos"
+                :key="item.descricao"
+              >
+                <component :is="item.icone" :style="{ fontSize: '34px', color: '#08c' }" />
+                <span class="menuModuloTxt">{{ item.descricao }}</span>
+              </button>
+            </div>
           </div>
         </template>
         <Button ghost :icon="h(AppstoreOutlined)" v-show="usuarioAutenticado"></Button>
