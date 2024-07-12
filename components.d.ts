@@ -48,6 +48,7 @@ declare module 'vue' {
     copy: typeof import('./src/components/EmpresaListaCard copy.vue')['default']
     EmpresaLista: typeof import('./src/components/EmpresaLista.vue')['default']
     EmpresaListaCard: typeof import('./src/components/EmpresaListaCard.vue')['default']
+    EmpresaListaItem: typeof import('./src/components/EmpresaListaItem.vue')['default']
     EmpresasSelecao: typeof import('./src/components/EmpresasSelecao.vue')['default']
     EmpresasUsuarioSelecao: typeof import('./src/components/EmpresasUsuarioSelecao.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']

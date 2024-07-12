@@ -33,7 +33,7 @@ function removerRegistro() {
   <a-list-item key="item.codigo">
     <a-list-item-meta :description="model.razaoSocial">
       <template #title>
-        <a @click="onEditar"> {{ model.codigo + ' - ' + model.nome }}</a>
+        <a-button type="link" @click="onEditar"> {{ model.codigo + ' - ' + model.nome }}</a-button>
       </template>
     </a-list-item-meta>
     <a-descriptions layout="vertical" bordered>

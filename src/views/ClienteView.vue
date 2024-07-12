@@ -45,7 +45,6 @@ const onFiltrar = (currentPage = 0) => {
 }
 
 const onChange = (page: number) => {
-  console.log(page)
   onFiltrar(page)
 }
 

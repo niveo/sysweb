@@ -30,16 +30,18 @@ function removerRegistro() {
 </script>
 
 <template>
-  <a-card :bodyStyle="{ padding: '1px' }">
+  <a-list-item key="item.codigo">
+    <a-list-item-meta :description="model.razaoSocial">
+      <template #title>
+        <a-button type="link" @click="onEditar"> {{ model.codigo + ' - ' + model.nome }}</a-button>
+      </template>
+    </a-list-item-meta>
     <a-descriptions layout="vertical" bordered>
       <a-descriptions-item label="CNPJ / CPF">
         {{ model.documento }}
       </a-descriptions-item>
       <a-descriptions-item label="IE" v-if="model.inscricaoEstadual">
         {{ model.inscricaoEstadual }}
-      </a-descriptions-item>
-      <a-descriptions-item label="Razão Social">
-        {{ model.razaoSocial }}
       </a-descriptions-item>
       <a-descriptions-item label="Telefone" v-if="model.telefone">
         {{ model.telefone }}
@@ -48,20 +50,7 @@ function removerRegistro() {
         {{ model.email }}
       </a-descriptions-item>
     </a-descriptions>
-    <template #title>
-      <a-button type="link" @click="onEditar"> {{ model.codigo + ' - ' + model.nome }}</a-button>
-    </template>
-    <template #extra>
-      <a-popover trigger="click">
-        <template #content>
-          <PopConfirmarRemoverRegistro @confirm="removerRegistro">
-            <a-button type="link" danger>Excluir</a-button>
-          </PopConfirmarRemoverRegistro>
-        </template>
-        <a-button :icon="h(MoreOutlined)"></a-button>
-      </a-popover>
-    </template>
-  </a-card>
+  </a-list-item>
 </template>
 
 <style scoped></style>

@@ -67,8 +67,6 @@ const onFinish = (values: FormState) => {
     })
 }
 
-const onFinishFailed = (errorInfo: any) => {}
-
 onMounted(() => {
   const codigo = route.params['codigo']
   if (codigo)
@@ -134,7 +132,6 @@ function onPesquisarCep(cep: string) {
       layout="vertical"
       :model="formState"
       @finish="onFinish"
-      @finishFailed="onFinishFailed"
       :validate-messages="validateMessages"
     >
       <a-form-item>

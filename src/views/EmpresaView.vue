@@ -5,6 +5,7 @@ import type { DrawerProps } from 'ant-design-vue'
 import { EmpresaServiceKey } from '../service'
 import type { PagedModel } from '../model/PagedModel'
 import { useRouter } from 'vue-router'
+import { lancarPaginaErro } from '@/common/utils'
 
 const router = useRouter()
 const service = inject(EmpresaServiceKey)!!
@@ -29,12 +30,22 @@ interface FormState {
 
 const formState = reactive<FormState>({})
 
-const onFiltrar = () => {
+const onFiltrar = (currentPage = 0) => {
   onClose()
-  service.obterTodos(toRaw(formState)).then((response) => {
-    page.page = response.page
-    page.content = response.content
-  })
+  service
+    .obterTodos(currentPage, toRaw(formState))
+    .then((response) => {
+      page.page = response.page
+      page.content = response.content
+    })
+    .catch((error) => {
+      console.error(error)
+      lancarPaginaErro(router, error)
+    })
+}
+
+const onChange = (page: number) => {
+  onFiltrar(page)
 }
 
 function onIncluir() {
@@ -44,7 +55,7 @@ function onIncluir() {
 
 <template>
   <main>
-    <div style="display: flex; flex-direction: row; justify-content: space-between">
+    <div style="display: flex; flex-direction: row; gap: 5px; flex-wrap: wrap">
       <a-button
         type="primary"
         shape="circle"
@@ -52,6 +63,13 @@ function onIncluir() {
         @click="showDrawer"
       ></a-button>
       <a-button type="primary" shape="circle" :icon="h(PlusOutlined)" @click="onIncluir"></a-button>
+      <a-pagination
+        v-if="page.page"
+        @change="onChange"
+        :total="page.page?.totalElements - 1"
+        :defaultPageSize="page.page?.totalPages"
+        :showSizeChanger="false"
+      />
     </div>
 
     <a-drawer
@@ -63,7 +81,7 @@ function onIncluir() {
     >
       <template #extra>
         <a-button style="margin-right: 8px" @click="onClose">Sair</a-button>
-        <a-button type="primary" @click="onFiltrar">Filtrar</a-button>
+        <a-button type="primary" @click="onFiltrar()">Filtrar</a-button>
       </template>
 
       <a-form :model="formState" name="basic" autocomplete="off" layout="vertical">
@@ -84,6 +102,13 @@ function onIncluir() {
         </a-form-item>
       </a-form>
     </a-drawer>
-    <EmpresaLista :page="page" @outRegistroRemovido="onFiltrar" />
+
+    <div style="width: 100%; height: 100%; background-color: rgb(236, 236, 236)">
+      <a-list item-layout="vertical" size="large" :data-source="page.content">
+        <template #renderItem="{ item }">
+          <EmpresaListaItem :model="item" />
+        </template>
+      </a-list>
+    </div>
   </main>
 </template>
