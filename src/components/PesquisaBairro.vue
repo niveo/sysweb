@@ -45,51 +45,48 @@ function onRowSelected(e: any) {
     </template>
   </a-input>
 
-  <a-modal v-model:open="dialogPesquisaVisible" title="Pesquisa Bairro" :footer="null">
-    <div>
-      <div style="padding: 5px; display: flex; flex-direction: row; gap: 5px">
-        <a-input-search
-          v-model:value="valorPesquisa"
-          autofocus
-          :loading="loadingPesquisa"
-          enter-button
-          @search="onPesquisar"
-        >
-        </a-input-search>
-
-        <a-tooltip>
-          <template #title>
-            <span>Cadastrar Bairro</span>
+  <a-drawer v-model:open="dialogPesquisaVisible" title="Pesquisa Bairro" placement="right">
+    <template #extra>
+      <a-tooltip placement="bottom">
+        <template #title>
+          <span>Cadastrar Bairro</span>
+        </template>
+        <a-button type="primary" @click="dialogCadastroVisible = true">
+          <template #icon>
+            <PlusCircleOutlined />
           </template>
-          <a-button type="primary" @click="dialogCadastroVisible = true">
-            <template #icon>
-              <PlusCircleOutlined />
-            </template>
-          </a-button>
-        </a-tooltip>
-      </div>
-      <div>
-        <a-table
-          :dataSource="dataSource"
-          :columns="columns"
-          @selection="onRowSelected"
-          :pagination="{ pageSize: 4 }"
-        >
-          <template #bodyCell="{ column, record }">
-            <template v-if="column.key === 'descricao'">
-              <span @click="onRowSelected(record)" style="cursor: pointer">
-                {{ record.descricao }}</span
-              >
-            </template>
-          </template>
-        </a-table>
-      </div>
-    </div>
-  </a-modal>
+        </a-button>
+      </a-tooltip>
+    </template>
 
-  <a-modal v-model:open="dialogCadastroVisible" title="Bairro" :footer="null">
-    <CadastroBairro @outRegistro="onRowSelected" />
-  </a-modal>
+    <a-input-search
+      v-model:value="valorPesquisa"
+      autofocus
+      :loading="loadingPesquisa"
+      enter-button
+      @search="onPesquisar"
+    >
+    </a-input-search>
+
+    <a-table
+      :dataSource="dataSource"
+      :columns="columns"
+      @selection="onRowSelected"
+      :pagination="{ pageSize: 4 }"
+    >
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'descricao'">
+          <span @click="onRowSelected(record)" style="cursor: pointer">
+            {{ record.descricao }}</span
+          >
+        </template>
+      </template>
+    </a-table>
+
+    <a-drawer v-model:open="dialogCadastroVisible" title="Cadastrar" placement="right">
+      <CadastroBairro @outRegistro="onRowSelected" />
+    </a-drawer>
+  </a-drawer>
 </template>
 
 <style scoped></style>

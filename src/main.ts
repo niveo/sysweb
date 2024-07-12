@@ -11,7 +11,9 @@ import {
   EstadoServiceImpl,
   NotificationServiceImpl,
   CepServiceImpl,
-  ClienteServiceImpl
+  ClienteServiceImpl,
+  ClienteEnderecoServiceImpl,
+  ClienteContatoServiceImpl
 } from './service/impl/'
 import {
   UsuarioServiceKey,
@@ -21,7 +23,9 @@ import {
   EstadoServiceKey,
   NotificationServiceKey,
   CepServiceKey,
-  ClienteServiceKey
+  ClienteServiceKey,
+  ClienteEnderecoServiceKey,
+  ClienteContatoServiceKey
 } from './service/'
 
 const app = createApp(App)
@@ -36,5 +40,6 @@ app.provide(BairroServiceKey, new BairroServiceImpl())
 app.provide(EstadoServiceKey, new EstadoServiceImpl())
 app.provide(NotificationServiceKey, new NotificationServiceImpl())
 app.provide(CepServiceKey, new CepServiceImpl())
-
+app.provide(ClienteEnderecoServiceKey, new ClienteEnderecoServiceImpl())
+app.provide(ClienteContatoServiceKey, new ClienteContatoServiceImpl())
 app.mount('#app')

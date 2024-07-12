@@ -54,14 +54,9 @@ function removerRegistro() {
     <template #extra>
       <a-popover trigger="click">
         <template #content>
-          <a-popconfirm
-            title="Deseja remover o registro selecionado?"
-            ok-text="Sim"
-            cancel-text="Não"
-            @confirm="removerRegistro"
-          >
+          <PopConfirmarRemoverRegistro @confirm="removerRegistro">
             <a-button type="link" danger>Excluir</a-button>
-          </a-popconfirm>
+          </PopConfirmarRemoverRegistro>
         </template>
         <a-button :icon="h(MoreOutlined)"></a-button>
       </a-popover>

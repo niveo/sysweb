@@ -1,2 +1,5 @@
 export const MSG_REGISTRO_SALVO_SUCESSO = 'Registro(s) salvo(s) com sucesso'
 export const MSG_REGISTRO_SALVAR_ERRO = 'Erro salvar registro(s)'
+export const MSG_REGISTRO_OBTER_ERRO = 'Erro obter registro(s)'
+export const MSG_REGISTRO_REMOVER_ERRO = 'Erro remover registro(s)'
+export const MSG_REGISTRO_REMOVIDO_SUCESSO = 'Registro(s) removido(s) com sucesso'

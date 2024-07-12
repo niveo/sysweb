@@ -5,13 +5,22 @@ import { vMaska } from 'maska/vue'
 import { SaveOutlined, PlusCircleOutlined } from '@ant-design/icons-vue'
 import { CepServiceKey, ClienteServiceKey, NotificationServiceKey } from '@/service'
 import { lancarPaginaErro, validateMessagesForm } from '@/common/utils'
-import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '@/common/constantes'
+import {
+  MSG_REGISTRO_SALVAR_ERRO,
+  MSG_REGISTRO_SALVO_SUCESSO,
+  MSG_REGISTRO_OBTER_ERRO
+} from '@/common/constantes'
 
 const router = useRouter()
 const route = useRoute()
 const clienteService = inject(ClienteServiceKey)!!
 const cepService = inject(CepServiceKey)!!
 const notification = inject(NotificationServiceKey)!!
+const clienteListaContato = ref()
+const clienteListaEndereco = ref()
+const codigoRegistro = ref()
+const loadingPesquisaCep = ref(false)
+const activePanelKey = ref()
 
 interface FormState {
   codigo?: number
@@ -23,8 +32,6 @@ interface FormState {
   inscricaoEstadual?: string
   tipoPessoa: string
   observacao?: string
-  contatos?: any
-  enderecos?: any
   endereco: {
     logradouro?: string
     numero?: string
@@ -46,9 +53,6 @@ const formState = reactive<FormState>({
   tipoPessoa: 'JURIDICA',
   endereco: {}
 })
-
-let codigoRegistro = ref()
-let loadingPesquisaCep = ref(false)
 
 const onFinish = (values: FormState) => {
   clienteService
@@ -87,8 +91,6 @@ onMounted(() => {
         formState.telefone = data.telefone
         formState.email = data.email
         formState.tipoPessoa = data.tipoPessoa
-        formState.contatos = data.contatos
-        formState.enderecos = data.enderecos
 
         if (data.endereco) {
           formState.endereco = data.endereco
@@ -125,7 +127,7 @@ function onPesquisarCep(cep: string) {
     .catch((error) => {
       notification.error({
         message: 'Erro',
-        description: MSG_REGISTRO_SALVAR_ERRO,
+        description: MSG_REGISTRO_OBTER_ERRO,
         error: error
       })
     })
@@ -133,10 +135,12 @@ function onPesquisarCep(cep: string) {
 }
 
 function handleNovoContato(event: MouseEvent) {
+  clienteListaContato.value.novoRegistro()
   event.stopPropagation()
 }
 
 function handleNovoEndereco(event: MouseEvent) {
+  clienteListaEndereco.value.novoRegistro()
   event.stopPropagation()
 }
 </script>
@@ -243,17 +247,18 @@ function handleNovoEndereco(event: MouseEvent) {
           type="textarea"
         ></a-textarea>
       </a-form-item>
-
-      <a-collapse>
+      <a-collapse v-model:activeKey="activePanelKey" accordion v-if="codigoRegistro">
         <a-collapse-panel key="1" header="Contatos">
           <template #extra>
             <a-button
               @click="handleNovoContato"
               :icon="h(PlusCircleOutlined)"
               type="primary"
-            ></a-button>
+              v-if="activePanelKey == 1"
+              >{{
+            }}</a-button>
           </template>
-          <ClienteListaContato :registros="formState.enderecos" />
+          <ClienteListaContato :cliente="codigoRegistro" ref="clienteListaContato" />
         </a-collapse-panel>
         <a-collapse-panel key="2" header="Endereços">
           <template #extra>
@@ -261,9 +266,11 @@ function handleNovoEndereco(event: MouseEvent) {
               @click="handleNovoEndereco"
               :icon="h(PlusCircleOutlined)"
               type="primary"
-            ></a-button>
+              v-if="activePanelKey == 2"
+              >{{
+            }}</a-button>
           </template>
-          <ClienteListaEndereco :registros="formState.enderecos" />
+          <ClienteListaEndereco :cliente="codigoRegistro" ref="clienteListaEndereco" />
         </a-collapse-panel>
       </a-collapse>
 

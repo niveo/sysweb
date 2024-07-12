@@ -1,3 +1,4 @@
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import type { Router } from 'vue-router'
 
 export const validateMessagesForm = {
@@ -31,4 +32,37 @@ export function lancarPaginaErro(router: Router, error: any) {
       data: error.response?.data ? JSON.stringify(error.response?.data) : null
     }
   })
+}
+
+export enum MediaQuery {
+  xs = 420,
+  sm = 640,
+  md = 768,
+  lg = 1024,
+  xl = 1280,
+  '2xl' = 1440,
+  '3xl' = 1600,
+  '4xl' = 1920
+}
+
+export function useBreakpoints() {
+  const windowWidth = ref(window.innerWidth)
+
+  const onWidthChange = () => (windowWidth.value = window.innerWidth)
+  onMounted(() => window.addEventListener('resize', onWidthChange))
+  onUnmounted(() => window.removeEventListener('resize', onWidthChange))
+
+  const mediaQuery = computed(() => {
+    for (const query of Object.keys(MediaQuery)) {
+      if (windowWidth.value < MediaQuery[query]) {
+        return MediaQuery[query]
+      }
+    }
+
+    return MediaQuery['4xl']
+  })
+
+  const width = computed(() => windowWidth.value)
+
+  return { width, mediaQuery }
 }
