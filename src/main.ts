@@ -4,6 +4,20 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import {
+  UsuarioServiceKey,
+  EmpresaServiceKey,
+  CidadeServiceKey,
+  BairroServiceKey,
+  EstadoServiceKey,
+  NotificationServiceKey,
+  CepServiceKey,
+  ClienteServiceKey,
+  ClienteContatoServiceKey,
+  ClienteEnderecoServiceKey,
+  SegmentoClienteServiceKey,
+  RedeClienteServiceKey
+} from './service/key'
+import {
   UsuarioServiceImpl,
   EmpresaServiceImpl,
   CidadeServiceImpl,
@@ -13,20 +27,10 @@ import {
   CepServiceImpl,
   ClienteServiceImpl,
   ClienteEnderecoServiceImpl,
-  ClienteContatoServiceImpl
+  ClienteContatoServiceImpl,
+  SegmentoClienteServiceImpl,
+  RedeClienteServiceImpl
 } from './service/impl/'
-import {
-  UsuarioServiceKey,
-  EmpresaServiceKey,
-  CidadeServiceKey,
-  BairroServiceKey,
-  EstadoServiceKey,
-  NotificationServiceKey,
-  CepServiceKey,
-  ClienteServiceKey,
-  ClienteEnderecoServiceKey,
-  ClienteContatoServiceKey
-} from './service/'
 
 const app = createApp(App)
 
@@ -40,6 +44,9 @@ app.provide(BairroServiceKey, new BairroServiceImpl())
 app.provide(EstadoServiceKey, new EstadoServiceImpl())
 app.provide(NotificationServiceKey, new NotificationServiceImpl())
 app.provide(CepServiceKey, new CepServiceImpl())
-app.provide(ClienteEnderecoServiceKey, new ClienteEnderecoServiceImpl())
 app.provide(ClienteContatoServiceKey, new ClienteContatoServiceImpl())
+app.provide(ClienteEnderecoServiceKey, new ClienteEnderecoServiceImpl())
+app.provide(SegmentoClienteServiceKey, new SegmentoClienteServiceImpl())
+app.provide(RedeClienteServiceKey, new RedeClienteServiceImpl())
+
 app.mount('#app')

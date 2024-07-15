@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ClienteContatoServiceKey } from '@/service'
+import { ClienteContatoServiceKey } from '../service/key'
 import { defineEmits, defineExpose, inject, ref, reactive, h, toRaw } from 'vue'
 import {
   SaveOutlined,
@@ -9,11 +9,7 @@ import {
 } from '@ant-design/icons-vue'
 import { validateMessagesForm } from '@/common/utils'
 import { NotificationServiceKey } from '../service'
-import {
-  MSG_REGISTRO_OBTER_ERRO,
-  MSG_REGISTRO_SALVAR_ERRO,
-  MSG_REGISTRO_SALVO_SUCESSO
-} from '@/common/constantes'
+import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '@/common/constantes'
 
 const emits = defineEmits(['outRegistro'])
 
@@ -101,7 +97,7 @@ const onSubmit = () => {
     .then(() => {
       salvarRegistro(toRaw(formState))
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.log('error', error)
     })
 }

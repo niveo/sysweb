@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Button, Form, FormItem, Input, InputPassword, Card, Alert, Table } from 'ant-design-vue'
-import { UsuarioServiceKey } from '../service/UsuarioService'
+import { Button, Form, FormItem, Input, InputPassword, Card } from 'ant-design-vue'
+import { UsuarioServiceKey } from '../service/key'
 import { reactive, ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
 

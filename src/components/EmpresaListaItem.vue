@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { EmpresaServiceKey } from '@/service'
+import { EmpresaServiceKey } from '@/service/key'
 import { EditOutlined, MoreOutlined } from '@ant-design/icons-vue'
 import { h, inject } from 'vue'
 import { useRouter } from 'vue-router'

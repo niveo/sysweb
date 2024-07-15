@@ -1,7 +1,7 @@
 import type { PagedModel } from '@/model/PagedModel'
 
-export interface ClienteService {
-  obterTodos(page: number, condicoes: any): Promise<PagedModel>
+export interface RedeClienteService {
+  obterTodos(page: number, condicoes?: any): Promise<PagedModel>
   obterCodigo(codigo: number): Promise<any>
   salvar(data: any): Promise<any>
   remover(codigo: number): Promise<any>

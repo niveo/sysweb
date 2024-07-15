@@ -1,7 +1,6 @@
-import type { InjectionKey } from 'vue'
+import type { PagedModel } from '@/model/PagedModel'
 
 export interface CidadeService {
   salvar(descricao: String, estado: number): Promise<any>
-  pesquisarDescricao(descricao: String): Promise<any[]>
+  obterTodos(page: number, condicoes: any): Promise<PagedModel>
 }
-export const CidadeServiceKey = Symbol() as InjectionKey<CidadeService>

@@ -2,11 +2,10 @@
 import { FilterOutlined, PlusOutlined } from '@ant-design/icons-vue'
 import { h, reactive, ref, inject, toRaw } from 'vue'
 import type { DrawerProps } from 'ant-design-vue'
-import { ClienteServiceKey } from '../service'
+import { ClienteServiceKey } from '../service/key'
 import type { PagedModel } from '../model/PagedModel'
-import { useRouter } from 'vue-router'
 import { lancarPaginaErro } from '@/common/utils'
-
+import { useRouter } from 'vue-router'
 const router = useRouter()
 const service = inject(ClienteServiceKey)!!
 const open = ref<boolean>(true)
@@ -30,7 +29,7 @@ interface FormState {
 
 const formState = reactive<FormState>({})
 
-const onFiltrar = (currentPage = 0) => {
+const onFiltrar = (currentPage = 1) => {
   onClose()
   service
     .obterTodos(currentPage, toRaw(formState))
@@ -63,13 +62,7 @@ function onIncluir() {
         @click="showDrawer"
       ></a-button>
       <a-button type="primary" shape="circle" :icon="h(PlusOutlined)" @click="onIncluir"></a-button>
-      <a-pagination
-        v-if="page.page"
-        @change="onChange"
-        :total="page.page?.totalElements - 1"
-        :defaultPageSize="page.page?.totalPages"
-        :showSizeChanger="false"
-      />
+      <PaginationPageModel :page="page.page" @onChange="onFiltrar" v-if="page.page" />
     </div>
 
     <a-drawer

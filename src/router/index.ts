@@ -4,7 +4,7 @@ import LoginView from '@/views/LoginView.vue'
 import PageError from '@/views/PageError.vue'
 
 import { inject } from 'vue'
-import { UsuarioServiceKey } from '@/service/UsuarioService'
+import { UsuarioServiceKey } from '@/service/key/UsuarioServiceKey'
 import PageNotFound from '@/views/PageNotFound.vue'
 
 const router = createRouter({
@@ -59,6 +59,11 @@ const router = createRouter({
       path: '/empresas',
       name: 'empresas_cadastrar',
       component: () => import('../views/EmpresaDetalheView.vue')
+    },
+    {
+      path: '/configuracoes',
+      name: 'configuracoes',
+      component: () => import('../views/ConfiguracaoView.vue')
     },
     {
       path: '/:catchAll(.*)*',

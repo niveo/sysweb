@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import { Layout, LayoutHeader, LayoutContent, Button, Popover } from 'ant-design-vue'
-import { UserOutlined, TeamOutlined, AppstoreOutlined, HomeOutlined } from '@ant-design/icons-vue'
+import {
+  UserOutlined,
+  TeamOutlined,
+  AppstoreOutlined,
+  HomeOutlined,
+  SettingOutlined
+} from '@ant-design/icons-vue'
 
-import { UsuarioServiceKey } from './service/UsuarioService'
+import { UsuarioServiceKey } from './service/key/UsuarioServiceKey'
 import { inject, ref, h } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -15,7 +21,9 @@ const usuarioAutenticado = usuarioService.$usuarioAutenticado
 const listaModulos = ref([
   { rota: '/clientes', descricao: 'Clientes', icone: TeamOutlined },
   { rota: '/usuarios', descricao: 'Usuários', icone: UserOutlined },
-  { rota: '/empresas', descricao: 'Empresas', icone: TeamOutlined }
+  { rota: '/empresas', descricao: 'Empresas', icone: TeamOutlined },
+
+  { rota: '/configuracoes', descricao: 'Configurações', icone: SettingOutlined }
 ])
 
 const navTo = (rota: string) => {

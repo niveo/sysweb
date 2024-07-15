@@ -1,38 +1,53 @@
 <script setup lang="ts">
 import { reactive, inject, onMounted, ref, h, defineEmits } from 'vue'
-import { EstadoServiceKey, CidadeServiceKey } from '../service'
+import { EstadoServiceKey, CidadeServiceKey, NotificationServiceKey } from '../service/key'
 import { SaveOutlined } from '@ant-design/icons-vue'
+import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '@/common/constantes'
 const estadoService = inject(EstadoServiceKey)!!
-const cidadeService = inject(CidadeServiceKey)!!
+const notification = inject(NotificationServiceKey)!!
+const service = inject(CidadeServiceKey)!!
 
 const emit = defineEmits(['outRegistro'])
+
+const props = defineProps({
+  registro: {
+    type: Object,
+    required: false
+  }
+})
 
 interface FormState {
   descricao: string
   estado?: any
 }
 
-const msgError = ref()
-const estados = ref([])
+const estados = ref<any[]>([])
 
 const formState = reactive<FormState>({
   descricao: ''
 })
 const onFinish = (values: FormState) => {
   console.log('Success:', values)
-  msgError.value = ''
-  cidadeService
-    .salvar(values.descricao, values.estado)
-    .then((data) => emit('outRegistro', data))
+  service
+    .salvar({ descricao: values.descricao, estado: values.estado, codigo: props.registro?.codigo })
+    .then((data) => {
+      notification.success({
+        description: MSG_REGISTRO_SALVO_SUCESSO
+      })
+      emit('outRegistro', data)
+    })
     .catch((error) => {
       console.error(error)
-      msgError.value = error.response.data.properties.description
+      notification.error({
+        message: 'Erro',
+        description: MSG_REGISTRO_SALVAR_ERRO,
+        error: error
+      })
     })
 }
 
 const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo)
-  msgError.value = ''
 }
 
 onMounted(() => {
@@ -76,7 +91,6 @@ onMounted(() => {
         <a-button type="primary" html-type="submit" :icon="h(SaveOutlined)">Salvar</a-button>
       </a-form-item>
     </a-form>
-    <a-alert v-if="msgError" :description="msgError" type="error" />
   </main>
 </template>
 

@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ClienteEnderecoServiceKey } from '@/service'
 import { defineEmits, defineExpose, inject, ref, reactive, h, toRaw } from 'vue'
 import { SaveOutlined } from '@ant-design/icons-vue'
 import { validateMessagesForm } from '@/common/utils'
 import { vMaska } from 'maska/vue'
-import { CepServiceKey, NotificationServiceKey } from '../service'
+import { CepServiceKey, NotificationServiceKey, ClienteEnderecoServiceKey } from '../service/key'
 import {
   MSG_REGISTRO_OBTER_ERRO,
   MSG_REGISTRO_SALVAR_ERRO,
@@ -130,7 +129,7 @@ const onSubmit = () => {
     .then(() => {
       salvarRegistro(toRaw(formState))
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.log('error', error)
     })
 }
@@ -176,11 +175,11 @@ defineExpose({ editarRegistro })
       </a-form-item>
 
       <a-form-item label="Cidade" name="cidade" :rules="[{ required: true }]">
-        <PesquisaCidade :registro="formState.cidade" @outRegistro="onCidade" />
+        <CidadePesquisa :registro="formState.cidade" @outRegistro="onCidade" />
       </a-form-item>
 
       <a-form-item label="Bairro" name="bairro" :rules="[{ required: true }]">
-        <PesquisaBairro :registro="formState.bairro" @outRegistro="onBairro" />
+        <BairroPesquisa :registro="formState.bairro" @outRegistro="onBairro" />
       </a-form-item>
 
       <a-form-item label="Complemento" name="complemento">

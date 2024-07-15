@@ -2,7 +2,7 @@ import type { PagedModel } from '@/model/PagedModel'
 import type { EmpresaService } from '../EmpresaService'
 import api from '@/api'
 export class EmpresaServiceImpl implements EmpresaService {
-  obterTodos(page: number = 0, condicoes: any): Promise<PagedModel> {
+  obterTodos(page: number = 1, condicoes: any): Promise<PagedModel> {
     return api
       .get('/empresas', {
         params: {

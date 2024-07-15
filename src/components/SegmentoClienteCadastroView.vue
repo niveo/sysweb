@@ -1,36 +1,54 @@
 <script setup lang="ts">
-import { reactive, inject, ref, h, defineEmits } from 'vue'
-import { BairroServiceKey } from '../service'
+import { reactive, inject, h, defineEmits, onMounted } from 'vue'
+import { NotificationServiceKey, SegmentoClienteServiceKey } from '../service/key'
 import { SaveOutlined } from '@ant-design/icons-vue'
-const bairroService = inject(BairroServiceKey)!!
-
+import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '@/common/constantes'
+const service = inject(SegmentoClienteServiceKey)!!
+const notification = inject(NotificationServiceKey)!!
 const emit = defineEmits(['outRegistro'])
+
+const props = defineProps({
+  registro: {
+    type: Object,
+    required: false
+  }
+})
 
 interface FormState {
   descricao: string
 }
 
-const msgError = ref()
-
 const formState = reactive<FormState>({
   descricao: ''
 })
+
 const onFinish = (values: FormState) => {
   console.log('Success:', values)
-  msgError.value = ''
-  bairroService
-    .salvar(values.descricao)
-    .then((data) => emit('outRegistro', data))
+  service
+    .salvar({ descricao: values.descricao, codigo: props.registro?.codigo })
+    .then((data) => {
+      notification.success({
+        description: MSG_REGISTRO_SALVO_SUCESSO
+      })
+      emit('outRegistro', data)
+    })
     .catch((error) => {
       console.error(error)
-      msgError.value = error.response.data.properties.description
+      notification.error({
+        message: 'Erro',
+        description: MSG_REGISTRO_SALVAR_ERRO,
+        error: error
+      })
     })
 }
 
 const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo)
-  msgError.value = ''
 }
+
+onMounted(() => {
+  formState.descricao = props.registro?.descricao
+})
 </script>
 
 <template>
@@ -55,7 +73,6 @@ const onFinishFailed = (errorInfo: any) => {
         <a-button type="primary" html-type="submit" :icon="h(SaveOutlined)">Salvar</a-button>
       </a-form-item>
     </a-form>
-    <a-alert v-if="msgError" :description="msgError" type="error" />
   </main>
 </template>
 

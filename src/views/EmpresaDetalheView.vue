@@ -3,7 +3,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { reactive, computed, h, onMounted, inject, ref, toRaw } from 'vue'
 import { vMaska } from 'maska/vue'
 import { SaveOutlined } from '@ant-design/icons-vue'
-import { CepServiceKey, EmpresaServiceKey, NotificationServiceKey } from '@/service'
+import { CepServiceKey, EmpresaServiceKey, NotificationServiceKey } from '@/service/key'
 import { validateMessagesForm } from '@/common/utils'
 import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '@/common/constantes'
 
@@ -212,11 +212,11 @@ function onPesquisarCep(cep: string) {
       </a-form-item>
 
       <a-form-item label="Cidade" :name="['endereco', 'cidade']" :rules="[{ required: true }]">
-        <PesquisaCidade :registro="formState.endereco.cidade" @outRegistro="onCidade" />
+        <CidadePesquisa :registro="formState.endereco.cidade" @outRegistro="onCidade" />
       </a-form-item>
 
       <a-form-item label="Bairro" :name="['endereco', 'bairro']" :rules="[{ required: true }]">
-        <PesquisaBairro :registro="formState.endereco.bairro" @outRegistro="onBairro" />
+        <BairroPesquisa :registro="formState.endereco.bairro" @outRegistro="onBairro" />
       </a-form-item>
 
       <a-form-item label="Complemento" :name="['endereco', 'complemento']">

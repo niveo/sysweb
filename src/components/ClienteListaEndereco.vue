@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ClienteEnderecoServiceKey, NotificationServiceKey } from '@/service'
+import { ClienteEnderecoServiceKey, NotificationServiceKey } from '@/service/key'
 import { onMounted, defineExpose, inject, ref, reactive, h, computed } from 'vue'
 import { EditOutlined, DeleteFilled } from '@ant-design/icons-vue'
 import { MediaQuery, useBreakpoints } from '@/common/utils'

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UsuarioServiceKey } from '@/service'
+import { UsuarioServiceKey } from '../service/key'
 import type { SelectProps } from 'ant-design-vue'
 import { ref, inject, onMounted } from 'vue'
 

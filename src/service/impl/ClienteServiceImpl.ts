@@ -2,7 +2,7 @@ import type { PagedModel } from '@/model/PagedModel'
 import type { ClienteService } from '../ClienteService'
 import api from '@/api'
 export class ClienteServiceImpl implements ClienteService {
-  obterTodos(page: number = 0, condicoes: any): Promise<PagedModel> {
+  obterTodos(page: number = 1, condicoes: any): Promise<PagedModel> {
     return api
       .get('/clientes', {
         params: {

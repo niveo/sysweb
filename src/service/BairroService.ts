@@ -1,7 +1,6 @@
-import type { InjectionKey } from 'vue'
+import type { PagedModel } from '@/model/PagedModel'
 
 export interface BairroService {
-  salvar(descricao: String): Promise<any>
-  pesquisarDescricao(descricao: String): Promise<any[]>
+  salvar(data: any): Promise<any>
+  obterTodos(page: number, condicoes: any): Promise<PagedModel>
 }
-export const BairroServiceKey = Symbol() as InjectionKey<BairroService>

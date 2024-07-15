@@ -3,7 +3,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { reactive, computed, h, onMounted, inject, ref, toRaw } from 'vue'
 import { vMaska } from 'maska/vue'
 import { SaveOutlined, PlusCircleOutlined } from '@ant-design/icons-vue'
-import { CepServiceKey, ClienteServiceKey, NotificationServiceKey } from '@/service'
+import { CepServiceKey, ClienteServiceKey, NotificationServiceKey } from '@/service/key'
 import { lancarPaginaErro, validateMessagesForm } from '@/common/utils'
 import {
   MSG_REGISTRO_SALVAR_ERRO,
@@ -42,6 +42,14 @@ interface FormState {
       descricao?: string
     }
     bairro?: {
+      codigo?: number
+      descricao?: string
+    }
+    segmento?: {
+      codigo?: number
+      descricao?: string
+    }
+    rede?: {
       codigo?: number
       descricao?: string
     }
@@ -91,6 +99,8 @@ onMounted(() => {
         formState.telefone = data.telefone
         formState.email = data.email
         formState.tipoPessoa = data.tipoPessoa
+        formState.segmento = data.segmento
+        formState.rede = data.rede
 
         if (data.endereco) {
           formState.endereco = data.endereco
@@ -111,6 +121,12 @@ const onCidade = (cidade: any) => {
 }
 const onBairro = (bairro: any) => {
   formState.endereco!!.bairro = bairro
+}
+const onSegmento = (segmento: any) => {
+  formState.segmento = segmento
+}
+const onRede = (rede: any) => {
+  formState.rede = rede
 }
 
 function onPesquisarCep(cep: string) {
@@ -206,6 +222,14 @@ function handleNovoEndereco(event: MouseEvent) {
         ></a-textarea>
       </a-form-item>
 
+      <a-form-item label="Segmento" name="segmento">
+        <SegmentoClientePesquisaView :registro="formState.segmento" @outRegistro="onSegmento" />
+      </a-form-item>
+
+      <a-form-item label="Rede" name="rede">
+        <RedeClientePesquisaView :registro="formState.rede" @outRegistro="onRede" />
+      </a-form-item>
+
       <h5>Endereço</h5>
 
       <a-form-item label="CEP" :name="['endereco', 'cep']" :rules="[{ required: true }]">
@@ -232,11 +256,11 @@ function handleNovoEndereco(event: MouseEvent) {
       </a-form-item>
 
       <a-form-item label="Cidade" :name="['endereco', 'cidade']" :rules="[{ required: true }]">
-        <PesquisaCidade :registro="formState.endereco.cidade" @outRegistro="onCidade" />
+        <CidadePesquisa :registro="formState.endereco.cidade" @outRegistro="onCidade" />
       </a-form-item>
 
       <a-form-item label="Bairro" :name="['endereco', 'bairro']" :rules="[{ required: true }]">
-        <PesquisaBairro :registro="formState.endereco.bairro" @outRegistro="onBairro" />
+        <BairroPesquisa :registro="formState.endereco.bairro" @outRegistro="onBairro" />
       </a-form-item>
 
       <a-form-item label="Complemento" :name="['endereco', 'complemento']">
