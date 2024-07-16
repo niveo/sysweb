@@ -10,6 +10,7 @@ import {
   MSG_REGISTRO_SALVO_SUCESSO,
   MSG_REGISTRO_OBTER_ERRO
 } from '../common/constantes'
+import type { CodigoDescricaoModel } from '../model/CodigoDescricaoModel'
 
 const router = useRouter()
 const route = useRoute()
@@ -37,23 +38,12 @@ interface FormState {
     numero?: string
     cep?: string
     complemento?: string
-    cidade?: {
-      codigo?: number
-      descricao?: string
-    }
-    bairro?: {
-      codigo?: number
-      descricao?: string
-    }
+    cidade?: CodigoDescricaoModel
+    bairro?: CodigoDescricaoModel
   }
-  segmento?: {
-    codigo?: number
-    descricao?: string
-  }
-  rede?: {
-    codigo?: number
-    descricao?: string
-  }
+  segmento?: CodigoDescricaoModel
+  rede?: CodigoDescricaoModel
+  tabela?: CodigoDescricaoModel
 }
 
 const formState = reactive<FormState>({
@@ -61,7 +51,8 @@ const formState = reactive<FormState>({
   tipoPessoa: 'JURIDICA',
   endereco: {},
   segmento: {},
-  rede: {}
+  rede: {},
+  tabela: {}
 })
 
 const onFinish = (values: FormState) => {
@@ -101,6 +92,7 @@ onMounted(() => {
         formState.tipoPessoa = data.tipoPessoa
         formState.segmento = data.segmento
         formState.rede = data.rede
+        formState.tabela = data.tabela
 
         if (data.endereco) {
           formState.endereco = data.endereco
@@ -127,6 +119,9 @@ const onSegmento = (segmento: any) => {
 }
 const onRede = (rede: any) => {
   formState.rede = rede
+}
+const onTabela = (tabela: any) => {
+  formState.tabela = tabela
 }
 
 function onPesquisarCep(cep: string) {
@@ -227,6 +222,10 @@ function handleNovoEndereco(event: MouseEvent) {
 
       <a-form-item label="Rede" name="rede">
         <RedeClientePesquisaView :registro="formState.rede" @outRegistro="onRede" />
+      </a-form-item>
+
+      <a-form-item label="Tabela de Preço" name="tabela">
+        <TabelaPrecoPesquisaView :registro="formState.tabela" @outRegistro="onTabela" />
       </a-form-item>
 
       <h5>Endereço</h5>

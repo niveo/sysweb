@@ -1,6 +1,6 @@
 import './assets/main.css'
 
-import { createApp } from 'vue'
+import { createApp, defineAsyncComponent } from 'vue'
 import App from './App.vue'
 import router from './router'
 import {
@@ -15,7 +15,10 @@ import {
   ClienteContatoServiceKey,
   ClienteEnderecoServiceKey,
   SegmentoClienteServiceKey,
-  RedeClienteServiceKey
+  RedeClienteServiceKey,
+  TabelaPrecoServiceKey,
+  ProdutoServiceKey,
+  ConfiguracaoViewServiceKey
 } from './service/key'
 import {
   UsuarioServiceImpl,
@@ -29,7 +32,10 @@ import {
   ClienteEnderecoServiceImpl,
   ClienteContatoServiceImpl,
   SegmentoClienteServiceImpl,
-  RedeClienteServiceImpl
+  RedeClienteServiceImpl,
+  TabelaPrecoServiceImpl,
+  ProdutoServiceImpl,
+  ConfiguracaoViewServiceImpl
 } from './service/impl/'
 
 const app = createApp(App)
@@ -48,5 +54,28 @@ app.provide(ClienteContatoServiceKey, new ClienteContatoServiceImpl())
 app.provide(ClienteEnderecoServiceKey, new ClienteEnderecoServiceImpl())
 app.provide(SegmentoClienteServiceKey, new SegmentoClienteServiceImpl())
 app.provide(RedeClienteServiceKey, new RedeClienteServiceImpl())
+app.provide(TabelaPrecoServiceKey, new TabelaPrecoServiceImpl())
+app.provide(ProdutoServiceKey, new ProdutoServiceImpl())
+app.provide(ConfiguracaoViewServiceKey, new ConfiguracaoViewServiceImpl())
+
+app.component(
+  'LT_01',
+  defineAsyncComponent(() => import('./components/ProdutoListaItem.vue'))
+)
+
+app.component(
+  'LT_02',
+  defineAsyncComponent(() => import('./components/EmpresaListaItem.vue'))
+)
+
+app.component(
+  'LT_03',
+  defineAsyncComponent(() => import('./components/ClienteListaItem.vue'))
+)
+
+app.component(
+  'CP_01',
+  defineAsyncComponent(() => import('./components/ui/InputComponent.vue'))
+)
 
 app.mount('#app')

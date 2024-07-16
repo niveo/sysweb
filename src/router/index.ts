@@ -23,7 +23,10 @@ const router = createRouter({
     {
       path: '/clientes',
       name: 'clientes',
-      component: () => import('../views/ClienteView.vue')
+      component: () => import('../views/GlobalGradeView.vue'),
+      props: {
+        codigo: 3
+      }
     },
     {
       path: '/clientes/:codigo',
@@ -43,7 +46,10 @@ const router = createRouter({
     {
       path: '/empresas',
       name: 'empresas',
-      component: () => import('../views/EmpresaView.vue')
+      component: () => import('../views/GlobalGradeView.vue'),
+      props: {
+        codigo: 2
+      }
     },
     {
       path: '/empresas/:codigo',
@@ -54,6 +60,24 @@ const router = createRouter({
       path: '/empresas',
       name: 'empresas_cadastrar',
       component: () => import('../views/EmpresaDetalheView.vue')
+    },
+    {
+      path: '/produtos',
+      name: 'produtos',
+      component: () => import('../views/GlobalGradeView.vue'),
+      props: {
+        codigo: 1
+      }
+    },
+    {
+      path: '/produtos/:codigo',
+      name: 'produtos_detalhe',
+      component: () => import('../views/ProdutoDetalheView.vue')
+    },
+    {
+      path: '/produtos',
+      name: 'produtos_cadastrar',
+      component: () => import('../views/ProdutoDetalheView.vue')
     },
     {
       path: '/configuracoes',

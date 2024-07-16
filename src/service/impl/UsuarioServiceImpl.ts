@@ -1,12 +1,11 @@
 import api from '@/api'
 import type { UsuarioService } from '../UsuarioService'
-import { jwtDecode } from 'jwt-decode'
+import jwtDecode from 'jwt-decode'
 import dayjs from 'dayjs'
 import { ref } from 'vue'
 
 export class UsuarioServiceImpl implements UsuarioService {
   tempoSessaoToken?: Date
-
   $usuarioAutenticado = ref<boolean>(false)
 
   async login(email: string, senha: string): Promise<void> {

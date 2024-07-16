@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { EmpresaServiceKey } from '../service/key/EmpresaServiceKey'
+import { ProdutoServiceKey } from '../service/key/ProdutoServiceKey'
 import { inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { notification } from 'ant-design-vue'
@@ -9,10 +9,10 @@ const prop = defineProps<{
   model: any
 }>()
 const emit = defineEmits(['outRegistroRemovido'])
-const service = inject(EmpresaServiceKey)!!
+const service = inject(ProdutoServiceKey)!!
 
 function onEditar() {
-  router.push({ name: 'empresas_detalhe', params: { codigo: prop.model.codigo } })
+  router.push({ name: 'produtos_detalhe', params: { codigo: prop.model.codigo } })
 }
 
 function removerRegistro() {
@@ -30,23 +30,16 @@ function removerRegistro() {
 
 <template>
   <a-list-item key="item.codigo">
-    <a-list-item-meta :description="model.razaoSocial">
+    <a-list-item-meta>
       <template #title>
-        <a-button type="link" @click="onEditar"> {{ model.codigo + ' - ' + model.nome }}</a-button>
+        <a-button type="link" @click="onEditar">
+          {{ model.codigo + ' - ' + model.descricao }}</a-button
+        >
       </template>
     </a-list-item-meta>
     <a-descriptions layout="vertical" bordered>
-      <a-descriptions-item label="CNPJ / CPF">
-        {{ model.documento }}
-      </a-descriptions-item>
-      <a-descriptions-item label="IE" v-if="model.inscricaoEstadual">
-        {{ model.inscricaoEstadual }}
-      </a-descriptions-item>
-      <a-descriptions-item label="Telefone" v-if="model.telefone">
-        {{ model.telefone }}
-      </a-descriptions-item>
-      <a-descriptions-item label="E-mail" v-if="model.email">
-        {{ model.email }}
+      <a-descriptions-item label="Referência">
+        {{ model.referencia }}
       </a-descriptions-item>
     </a-descriptions>
   </a-list-item>

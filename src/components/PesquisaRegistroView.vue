@@ -19,7 +19,7 @@ const props = defineProps({
   },
   componenteCadastro: {
     type: Object,
-    required: true
+    required: false
   },
   descricao: {
     type: String,
@@ -33,6 +33,10 @@ const props = defineProps({
     type: Boolean,
     required: false,
     default: false
+  },
+  tipoCadastro: {
+    type: Boolean,
+    default: true
   }
 })
 const emit = defineEmits(['outRegistro'])
@@ -98,7 +102,7 @@ function onRemoverRegistro(registro: any) {
 }
 
 onMounted(() => {
-  onFiltrar(1)
+  if (props.tipoEdicao) onFiltrar(1)
 })
 </script>
 
@@ -121,7 +125,7 @@ onMounted(() => {
     placement="right"
     :bodyStyle="{ padding: '5px' }"
   >
-    <template #extra>
+    <template #extra v-if="tipoCadastro">
       <a-tooltip placement="bottom">
         <template #title>
           <span>Cadastrar {{ descricao }}</span>
@@ -175,6 +179,7 @@ onMounted(() => {
       :destroyOnClose="true"
     >
       <component
+        v-if="componenteCadastro"
         :is="componenteCadastro"
         @outRegistro="onFiltrar()"
         :registro="registroEdicao"

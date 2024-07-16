@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import { defineEmits } from 'vue'
-import { SegmentoClienteServiceKey } from '../service/key/SegmentoClienteServiceKey'
+import { TabelaPrecoServiceKey } from '../service/key/TabelaPrecoServiceKey'
 import SegmentoClienteCadastroView from './SegmentoClienteCadastroView.vue'
 
 defineProps({
   registro: {
     type: Object,
     required: false
-  },
-  tipoEdicao: {
-    type: Boolean,
-    required: false,
-    default: false
   }
 })
 const emit = defineEmits(['outRegistro'])
@@ -23,11 +18,11 @@ const onOutRegistro = (e: any) => {
 <template>
   <PesquisaRegistroView
     :registro="registro"
-    :tipoEdicao="tipoEdicao"
-    :serviceKey="SegmentoClienteServiceKey"
-    :componenteCadastro="SegmentoClienteCadastroView"
+    :tipoEdicao="false"
+    :serviceKey="TabelaPrecoServiceKey"
     @outRegistro="onOutRegistro"
-    descricao="Segmento"
+    descricao="Tabela de Preço"
+    :tipoCadastro="false"
   />
 </template>
 
