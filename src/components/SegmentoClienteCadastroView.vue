@@ -26,13 +26,13 @@ const onFinish = (values: FormState) => {
   console.log('Success:', values)
   service
     .salvar({ descricao: values.descricao, codigo: props.registro?.codigo })
-    .then((data) => {
+    .then((data: any) => {
       notification.success({
         description: MSG_REGISTRO_SALVO_SUCESSO
       })
       emit('outRegistro', data)
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error(error)
       notification.error({
         message: 'Erro',

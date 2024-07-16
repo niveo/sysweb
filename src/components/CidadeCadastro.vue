@@ -2,7 +2,7 @@
 import { reactive, inject, onMounted, ref, h, defineEmits } from 'vue'
 import { EstadoServiceKey, CidadeServiceKey, NotificationServiceKey } from '../service/key'
 import { SaveOutlined } from '@ant-design/icons-vue'
-import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '@/common/constantes'
+import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '../common/constantes'
 const estadoService = inject(EstadoServiceKey)!!
 const notification = inject(NotificationServiceKey)!!
 const service = inject(CidadeServiceKey)!!

@@ -11,7 +11,7 @@ const data = ref()
 onMounted(() => {
   code.value = route.query['code']
   message.value = route.query['message']
-  if (route.query['data']) data.value = JSON.parse(route.query['data'])
+  if (route.query['data']) data.value = JSON.parse(route.query['data'] as any)
 })
 </script>
 <template>

@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { ClienteEnderecoServiceKey, NotificationServiceKey } from '@/service/key'
-import { onMounted, defineExpose, inject, ref, reactive, h, computed } from 'vue'
+import { ClienteEnderecoServiceKey, NotificationServiceKey } from '../service/key'
+import { onMounted, defineExpose, inject, ref, h, computed } from 'vue'
 import { EditOutlined, DeleteFilled } from '@ant-design/icons-vue'
-import { MediaQuery, useBreakpoints } from '@/common/utils'
+import { MediaQuery, useBreakpoints } from '../common/utils'
 import {
   MSG_REGISTRO_REMOVER_ERRO,
   MSG_REGISTRO_REMOVIDO_SUCESSO,
   MSG_REGISTRO_OBTER_ERRO
-} from '@/common/constantes'
+} from '../common/constantes'
 
 const { mediaQuery } = useBreakpoints()
 
-const service = inject(ClienteEnderecoServiceKey)!!
-const notification = inject(NotificationServiceKey)!!
+const service = inject<any>(ClienteEnderecoServiceKey)!!
+const notification = inject<any>(NotificationServiceKey)!!
 const registros: Record<string, string>[] = []
 const props = defineProps<{
   cliente: number
@@ -28,11 +28,11 @@ function carregarRegistro() {
   registros.splice(0, registros.length + 1)
   service
     .obterRegistros(props.cliente)
-    .then((data) => {
+    .then((data: any) => {
       registros.push(...data)
       updateGridRegistros.value = !updateGridRegistros.value
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error(error)
       notification.error({
         message: 'Erro',
@@ -59,7 +59,7 @@ function removerRegistro(registro: any) {
       })
       carregarRegistro()
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error(error)
       notification.error({
         message: 'Erro',
@@ -111,5 +111,5 @@ defineExpose({ novoRegistro })
       </a-list-item>
     </template>
   </a-list>
-  <CadastroClienteEndereco ref="cadastroClienteEndereco" @outRegistro="carregarRegistro" />
+  <ClienteCadastroEndereco ref="cadastroClienteEndereco" @outRegistro="carregarRegistro" />
 </template>

@@ -7,9 +7,9 @@ import {
   PhoneOutlined,
   MailOutlined
 } from '@ant-design/icons-vue'
-import { validateMessagesForm } from '@/common/utils'
-import { NotificationServiceKey } from '../service'
-import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '@/common/constantes'
+import { validateMessagesForm } from '../common/utils'
+import { NotificationServiceKey } from '../service/key/NotificationServiceKey'
+import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '../common/constantes'
 
 const emits = defineEmits(['outRegistro'])
 
@@ -22,7 +22,7 @@ interface FormState {
 }
 
 const service = inject(ClienteContatoServiceKey)!!
-const notification = inject(NotificationServiceKey)!!
+const notification = inject<any>(NotificationServiceKey)!!
 const open = ref<boolean>(false)
 const validateMessages = validateMessagesForm
 const formState = reactive<FormState>({

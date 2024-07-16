@@ -22,8 +22,8 @@ const onFinish = (values: FormState) => {
   msgError.value = ''
   service
     .salvar({ codigo: props.data?.codigo, descricao: values.descricao })
-    .then((data) => emit('outRegistro', data))
-    .catch((error) => {
+    .then((data: any) => emit('outRegistro', data))
+    .catch((error: any) => {
       console.error(error)
       msgError.value = error.response.data.properties.description
     })

@@ -3,19 +3,19 @@ import { useRoute, useRouter } from 'vue-router'
 import { reactive, computed, h, onMounted, inject, ref, toRaw } from 'vue'
 import { vMaska } from 'maska/vue'
 import { SaveOutlined, PlusCircleOutlined } from '@ant-design/icons-vue'
-import { CepServiceKey, ClienteServiceKey, NotificationServiceKey } from '@/service/key'
-import { lancarPaginaErro, validateMessagesForm } from '@/common/utils'
+import { CepServiceKey, ClienteServiceKey, NotificationServiceKey } from '../service/key'
+import { lancarPaginaErro, validateMessagesForm } from '../common/utils'
 import {
   MSG_REGISTRO_SALVAR_ERRO,
   MSG_REGISTRO_SALVO_SUCESSO,
   MSG_REGISTRO_OBTER_ERRO
-} from '@/common/constantes'
+} from '../common/constantes'
 
 const router = useRouter()
 const route = useRoute()
-const clienteService = inject(ClienteServiceKey)!!
-const cepService = inject(CepServiceKey)!!
-const notification = inject(NotificationServiceKey)!!
+const clienteService = inject<any>(ClienteServiceKey)!!
+const cepService = inject<any>(CepServiceKey)!!
+const notification = inject<any>(NotificationServiceKey)!!
 const clienteListaContato = ref()
 const clienteListaEndereco = ref()
 const codigoRegistro = ref()
@@ -45,33 +45,35 @@ interface FormState {
       codigo?: number
       descricao?: string
     }
-    segmento?: {
-      codigo?: number
-      descricao?: string
-    }
-    rede?: {
-      codigo?: number
-      descricao?: string
-    }
+  }
+  segmento?: {
+    codigo?: number
+    descricao?: string
+  }
+  rede?: {
+    codigo?: number
+    descricao?: string
   }
 }
 
 const formState = reactive<FormState>({
   codigo: 0,
   tipoPessoa: 'JURIDICA',
-  endereco: {}
+  endereco: {},
+  segmento: {},
+  rede: {}
 })
 
 const onFinish = (values: FormState) => {
   clienteService
     .salvar(Object.assign({ codigo: codigoRegistro.value }, toRaw(values)))
-    .then((data) => {
+    .then((data: any) => {
       codigoRegistro.value = data.codigo
       notification.success({
         description: MSG_REGISTRO_SALVO_SUCESSO
       })
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error(error)
       notification.error({
         message: 'Erro',
@@ -81,14 +83,12 @@ const onFinish = (values: FormState) => {
     })
 }
 
-const onFinishFailed = (errorInfo: any) => {}
-
 onMounted(() => {
   const codigo = route.params['codigo']
   if (codigo)
     clienteService
       .obterCodigo(Number(codigo))
-      .then((data) => {
+      .then((data: any) => {
         codigoRegistro.value = data.codigo
         formState.codigo = data.codigo
         formState.nome = data.nome
@@ -106,7 +106,7 @@ onMounted(() => {
           formState.endereco = data.endereco
         }
       })
-      .catch((error) => {
+      .catch((error: any) => {
         console.error(error)
         lancarPaginaErro(router, error)
       })
@@ -133,14 +133,14 @@ function onPesquisarCep(cep: string) {
   loadingPesquisaCep.value = true
   cepService
     .pesquisar(cep)
-    .then((data) => {
+    .then((data: any) => {
       if (data) {
         formState.endereco.logradouro = data.logradouro
         formState.endereco.cidade = data.cidade
         formState.endereco.bairro = data.bairro
       }
     })
-    .catch((error) => {
+    .catch((error: any) => {
       notification.error({
         message: 'Erro',
         description: MSG_REGISTRO_OBTER_ERRO,
@@ -167,7 +167,6 @@ function handleNovoEndereco(event: MouseEvent) {
       layout="vertical"
       :model="formState"
       @finish="onFinish"
-      @finishFailed="onFinishFailed"
       :validate-messages="validateMessages"
     >
       <a-form-item>

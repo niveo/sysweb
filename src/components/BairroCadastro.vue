@@ -2,7 +2,7 @@
 import { reactive, inject, h, defineEmits, onMounted } from 'vue'
 import { BairroServiceKey, NotificationServiceKey } from '../service/key'
 import { SaveOutlined } from '@ant-design/icons-vue'
-import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '@/common/constantes'
+import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '../common/constantes'
 const service = inject(BairroServiceKey)!!
 const notification = inject(NotificationServiceKey)!!
 const emit = defineEmits(['outRegistro'])
@@ -26,13 +26,13 @@ const onFinish = (values: FormState) => {
   console.log('Success:', values)
   service
     .salvar({ descricao: values.descricao, codigo: props.registro?.codigo })
-    .then((data) => {
+    .then((data: any) => {
       notification.success({
         description: MSG_REGISTRO_SALVO_SUCESSO
       })
       emit('outRegistro', data)
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error(error)
       notification.error({
         message: 'Erro',
@@ -73,7 +73,6 @@ onMounted(() => {
         <a-button type="primary" html-type="submit" :icon="h(SaveOutlined)">Salvar</a-button>
       </a-form-item>
     </a-form>
-    <a-alert v-if="msgError" :description="msgError" type="error" />
   </main>
 </template>
 

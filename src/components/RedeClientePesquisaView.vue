@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineEmits } from 'vue'
-import { RedeClienteServiceKey } from '@/service/key'
+import { RedeClienteServiceKey } from '../service/key/RedeClienteServiceKey'
 import RedeClienteCadastroView from './RedeClienteCadastroView.vue'
 
 defineProps({

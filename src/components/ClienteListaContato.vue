@@ -107,5 +107,5 @@ defineExpose({ novoRegistro })
       </a-list-item>
     </template>
   </a-list>
-  <CadastroClienteContato ref="cadastroClienteContato" @outRegistro="carregarRegistro" />
+  <ClienteCadastroContato ref="cadastroClienteContato" @outRegistro="carregarRegistro" />
 </template>

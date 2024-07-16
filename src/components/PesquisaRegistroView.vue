@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref, inject, toRaw, defineEmits, reactive, onMounted, h } from 'vue'
-import { NotificationServiceKey } from '@/service/key'
+import { NotificationServiceKey } from '../service/key'
 import {
   PlusCircleOutlined,
   SearchOutlined,
   EditOutlined,
   DeleteOutlined
 } from '@ant-design/icons-vue'
-import { lancarPaginaErro } from '@/common/utils'
-import type { PagedModel } from '@/model/PagedModel'
+import { lancarPaginaErro } from '../common/utils'
+import type { PagedModel } from '../model/PagedModel'
 import { useRouter } from 'vue-router'
-import { MSG_REGISTRO_REMOVER_ERRO, MSG_REGISTRO_REMOVIDO_SUCESSO } from '@/common/constantes'
+import { MSG_REGISTRO_REMOVER_ERRO, MSG_REGISTRO_REMOVIDO_SUCESSO } from '../common/constantes'
 
 const props = defineProps({
   serviceKey: {
@@ -39,8 +39,8 @@ const emit = defineEmits(['outRegistro'])
 
 const router = useRouter()
 const page = reactive<PagedModel>({})
-const service = inject(props.serviceKey)!!
-const notification = inject(NotificationServiceKey)!!
+const service = inject<any>(props.serviceKey)!!
+const notification = inject<any>(NotificationServiceKey)!!
 const dialogPesquisaVisible = ref(false)
 const dialogCadastroVisible = ref(false)
 const loadingPesquisa = ref(false)
@@ -65,13 +65,16 @@ function onRowSelected(e: any) {
     emit('outRegistro', toRaw(e))
     dialogCadastroVisible.value = false
     dialogPesquisaVisible.value = false
-  } else {
-    registroEdicao.value = toRaw(e)
   }
 }
 
-function onNovoCadastro() {
+function onNovoRegistro() {
   registroEdicao.value = {}
+  dialogCadastroVisible.value = true
+}
+
+function onEditarRegistro(registro: any) {
+  registroEdicao.value = toRaw(registro)
   dialogCadastroVisible.value = true
 }
 
@@ -84,7 +87,7 @@ function onRemoverRegistro(registro: any) {
       })
       onFiltrar()
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error(error)
       notification.error({
         message: 'Erro',
@@ -123,7 +126,7 @@ onMounted(() => {
         <template #title>
           <span>Cadastrar {{ descricao }}</span>
         </template>
-        <a-button type="primary" @click="onNovoCadastro">
+        <a-button type="primary" @click="onNovoRegistro">
           <template #icon>
             <PlusCircleOutlined />
           </template>
@@ -152,7 +155,7 @@ onMounted(() => {
             @click="onRowSelected(item)"
           >
             <template #actions v-if="tipoEdicao">
-              <a-button @click="onRowSelected(item)" :icon="h(EditOutlined)"> </a-button>
+              <a-button @click="onEditarRegistro(item)" :icon="h(EditOutlined)"> </a-button>
 
               <PopConfirmarRemoverRegistro @confirm="onRemoverRegistro(item)">
                 <a-button danger :icon="h(DeleteOutlined)"> </a-button>

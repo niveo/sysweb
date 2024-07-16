@@ -63,7 +63,7 @@ function onIncluir() {
         @click="showDrawer"
       ></a-button>
       <a-button type="primary" shape="circle" :icon="h(PlusOutlined)" @click="onIncluir"></a-button>
-      <PaginationPageModel :page="page.page" @onChange="onFiltrar" />
+      <PaginationPageModel :page="page.page" @onChange="onFiltrar" v-if="page.page" />
     </div>
 
     <a-drawer

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { defineEmits, defineExpose, inject, ref, reactive, h, toRaw } from 'vue'
 import { SaveOutlined } from '@ant-design/icons-vue'
-import { validateMessagesForm } from '@/common/utils'
+import { validateMessagesForm } from '../common/utils'
 import { vMaska } from 'maska/vue'
 import { CepServiceKey, NotificationServiceKey, ClienteEnderecoServiceKey } from '../service/key'
 import {
   MSG_REGISTRO_OBTER_ERRO,
   MSG_REGISTRO_SALVAR_ERRO,
   MSG_REGISTRO_SALVO_SUCESSO
-} from '@/common/constantes'
+} from '../common/constantes'
 
 const emits = defineEmits(['outRegistro'])
 
@@ -105,7 +105,7 @@ function salvarRegistro(values: any) {
       observacao: values.observacao,
       endereco: { ...toRaw(values) }
     })
-    .then((data) => {
+    .then((data: any) => {
       codigoRegistro.value = data.codigo
       codigoClienteRegistro.value = data.cliente
       notification.success({
@@ -113,7 +113,7 @@ function salvarRegistro(values: any) {
       })
       emits('outRegistro', data)
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error(error)
       notification.error({
         message: 'Erro',

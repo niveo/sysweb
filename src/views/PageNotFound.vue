@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <h1>404 - Page Not Found</h1>
-    <p>This page no longer exists or was moved to another location.</p>
-  </div>
+  <a-result status="404" title="404" sub-title="Sorry, the page you visited does not exist.">
+    <template #extra> </template>
+  </a-result>
 </template>

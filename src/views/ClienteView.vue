@@ -33,11 +33,11 @@ const onFiltrar = (currentPage = 1) => {
   onClose()
   service
     .obterTodos(currentPage, toRaw(formState))
-    .then((response) => {
-      page.page = response.page
-      page.content = response.content
+    .then((data: any) => {
+      page.page = data.page
+      page.content = data.content
     })
-    .catch((error) => {
+    .catch((error: any) => {
       console.error(error)
       lancarPaginaErro(router, error)
     })
