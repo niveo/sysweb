@@ -1,6 +1,3 @@
-import type { PagedModel } from '@/model/PagedModel'
+import type { BaseService } from './BaseService'
 
-export interface CidadeService {
-  salvar(data: any): Promise<any>
-  obterTodos(page: number, condicoes: any): Promise<PagedModel>
-}
+export interface CidadeService extends BaseService {}

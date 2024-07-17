@@ -18,7 +18,9 @@ import {
   RedeClienteServiceKey,
   TabelaPrecoServiceKey,
   ProdutoServiceKey,
-  ConfiguracaoGradeServiceKey
+  ConfiguracaoGradeServiceKey,
+  UnidadeServiceKey,
+  ProdutoUnidadeServiceKey
 } from './service/key'
 import {
   UsuarioServiceImpl,
@@ -35,7 +37,9 @@ import {
   RedeClienteServiceImpl,
   TabelaPrecoServiceImpl,
   ProdutoServiceImpl,
-  ConfiguracaoGradeServiceImpl
+  ConfiguracaoGradeServiceImpl,
+  UnidadeServiceImpl,
+  ProdutoUnidadeServiceImpl
 } from './service/impl/'
 
 const app = createApp(App)
@@ -57,6 +61,8 @@ app.provide(RedeClienteServiceKey, new RedeClienteServiceImpl())
 app.provide(TabelaPrecoServiceKey, new TabelaPrecoServiceImpl())
 app.provide(ProdutoServiceKey, new ProdutoServiceImpl())
 app.provide(ConfiguracaoGradeServiceKey, new ConfiguracaoGradeServiceImpl())
+app.provide(UnidadeServiceKey, new UnidadeServiceImpl())
+app.provide(ProdutoUnidadeServiceKey, new ProdutoUnidadeServiceImpl())
 
 app.component(
   'LT_01',

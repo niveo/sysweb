@@ -44,7 +44,7 @@ const formState = reactive<FormState>({
   observacao: ''
 })
 const codigoRegistro = ref()
-const codigoClienteRegistro = ref()
+const codigoReferencia = ref()
 const formRef = ref()
 
 const afterOpenChange = (bool: boolean) => {
@@ -55,7 +55,7 @@ const afterOpenChange = (bool: boolean) => {
 
 const editarRegistro = (registro: any) => {
   codigoRegistro.value = registro.codigo
-  codigoClienteRegistro.value = registro.cliente
+  codigoReferencia.value = registro.codigoReferencia
   formState.observacao = registro.observacao
 
   if (registro.endereco) {
@@ -101,13 +101,13 @@ function salvarRegistro(values: any) {
   service
     .salvar({
       codigo: codigoRegistro.value,
-      cliente: codigoClienteRegistro.value,
+      cliente: codigoReferencia.value,
       observacao: values.observacao,
       endereco: { ...toRaw(values) }
     })
     .then((data: any) => {
       codigoRegistro.value = data.codigo
-      codigoClienteRegistro.value = data.cliente
+      codigoReferencia.value = data.cliente
       notification.success({
         description: MSG_REGISTRO_SALVO_SUCESSO
       })

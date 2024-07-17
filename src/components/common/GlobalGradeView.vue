@@ -2,8 +2,8 @@
 import { FilterOutlined, PlusOutlined } from '@ant-design/icons-vue'
 import { h, reactive, ref, inject, toRaw, onMounted } from 'vue'
 import type { DrawerProps } from 'ant-design-vue'
-import type { PagedModel } from '../model/PagedModel'
-import { useRouter, useRoute } from 'vue-router'
+import type { PagedModel } from '../../model/PagedModel'
+import { useRouter } from 'vue-router'
 import { lancarPaginaErro } from '@/common/utils'
 import { ConfiguracaoGradeServiceKey } from '@/service/key/ConfiguracaoGradeServiceKey'
 import api from '@/api'
@@ -21,7 +21,7 @@ const placement = ref<DrawerProps['placement']>('left')
 const page = reactive<PagedModel>({})
 const formRef = ref()
 const formState = reactive<any>({})
-const forcarBind = ref(false)
+const forcarBind = ref<Boolean>(false)
 let config: any
 
 const showDrawer = () => {

@@ -70,7 +70,7 @@ onMounted(() => {
   if (codigo)
     empresaService
       .obterCodigo(Number(codigo))
-      .then((data) => {
+      .then((data: any) => {
         codigoRegistro.value = data.codigo
         formState.codigo = data.codigo
         formState.nome = data.nome
@@ -86,7 +86,7 @@ onMounted(() => {
           formState.endereco = data.endereco
         }
       })
-      .catch((error) => {
+      .catch((error: any) => {
         router.push({ name: 'error', params: { error: error } })
       })
 })

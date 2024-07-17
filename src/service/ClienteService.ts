@@ -1,8 +1,3 @@
-import type { PagedModel } from '@/model/PagedModel'
+import type { BaseService } from './BaseService'
 
-export interface ClienteService {
-  obterTodos(page: number, condicoes: any): Promise<PagedModel>
-  obterCodigo(codigo: number): Promise<any>
-  salvar(data: any): Promise<any>
-  remover(codigo: number): Promise<any>
-}
+export interface ClienteService extends BaseService {}

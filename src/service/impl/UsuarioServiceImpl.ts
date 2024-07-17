@@ -1,6 +1,6 @@
 import api from '@/api'
 import type { UsuarioService } from '../UsuarioService'
-import jwtDecode from 'jwt-decode'
+import { useJwt } from '@vueuse/integrations/useJwt'
 import dayjs from 'dayjs'
 import { ref } from 'vue'
 
@@ -14,8 +14,8 @@ export class UsuarioServiceImpl implements UsuarioService {
       senha: senha
     })
 
-    const decoded = jwtDecode(response.data.token)
-    this.tempoSessaoToken = new Date(decoded.exp!! * 1000)
+    const decoded = useJwt(response.data.token)
+    this.tempoSessaoToken = new Date(decoded.payload!!.value!!.exp!! * 1000)
     sessionStorage.setItem('TOKEN', response.data.token)
     this.$usuarioAutenticado.value = true
   }

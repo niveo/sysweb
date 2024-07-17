@@ -253,7 +253,7 @@ function handleNovoEndereco(event: MouseEvent) {
               >{{
             }}</a-button>
           </template>
-          <ClienteListaContato :cliente="codigoRegistro" ref="clienteListaContato" />
+          <ClienteContatoLista :cliente="codigoRegistro" ref="clienteListaContato" />
         </a-collapse-panel>
         <a-collapse-panel key="2" header="Endereços">
           <template #extra>
@@ -265,7 +265,7 @@ function handleNovoEndereco(event: MouseEvent) {
               >{{
             }}</a-button>
           </template>
-          <ClienteListaEndereco :cliente="codigoRegistro" ref="clienteListaEndereco" />
+          <ClienteEnderecoLista :cliente="codigoRegistro" ref="clienteListaEndereco" />
         </a-collapse-panel>
       </a-collapse>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
 import { reactive, h, onMounted, inject, ref, toRaw } from 'vue'
-import { SaveOutlined } from '@ant-design/icons-vue'
+import { SaveOutlined, PlusCircleOutlined } from '@ant-design/icons-vue'
 import { ProdutoServiceKey, NotificationServiceKey } from '@/service/key'
 import { validateMessagesForm } from '@/common/utils'
 import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '@/common/constantes'
@@ -10,6 +10,8 @@ const route = useRoute()
 const router = useRouter()
 const service = inject<any>(ProdutoServiceKey)!!
 const notification = inject<any>(NotificationServiceKey)!!
+const activePanelKey = ref()
+const produtoUnidadeLista = ref()
 
 interface FormState {
   descricao?: string
@@ -17,9 +19,14 @@ interface FormState {
   observacao?: string
   complemento?: string
   ativo: boolean
+  unidade?: {
+    codigo?: number
+    descricao?: string
+    sigla?: string
+  }
 }
 
-const formState = reactive<FormState>({ ativo: false })
+const formState = reactive<FormState>({ ativo: false, unidade: {} })
 
 let codigoRegistro = ref()
 
@@ -54,11 +61,24 @@ onMounted(() => {
         formState.observacao = data.observacao
         formState.complemento = data.complemento
         formState.ativo = data.ativo
+
+        if (data.unidade) {
+          formState.unidade = data.unidade
+        }
       })
       .catch((error: any) => {
         router.push({ name: 'error', params: { error: error } })
       })
 })
+
+const onUnidade = (unidade: any) => {
+  formState.unidade = unidade
+}
+
+function handleNovoProdutoUnidade(event: MouseEvent) {
+  produtoUnidadeLista.value.novoRegistro()
+  event.stopPropagation()
+}
 
 const validateMessages = validateMessagesForm
 </script>
@@ -99,6 +119,25 @@ const validateMessages = validateMessagesForm
           type="textarea"
         ></a-textarea>
       </a-form-item>
+
+      <a-form-item label="Unidade" name="unidade" :rules="[{ required: true }]">
+        <UnidadePesquisaView :registro="formState.unidade" @outRegistro="onUnidade" />
+      </a-form-item>
+
+      <a-collapse v-model:activeKey="activePanelKey" accordion v-if="codigoRegistro">
+        <a-collapse-panel key="1" header="Barra">
+          <template #extra>
+            <a-button
+              @click="handleNovoProdutoUnidade"
+              :icon="h(PlusCircleOutlined)"
+              type="primary"
+              v-if="activePanelKey == 1"
+              >{{
+            }}</a-button>
+          </template>
+          <ProdutoUnidadeLista :codigo="codigoRegistro" ref="produtoUnidadeLista" />
+        </a-collapse-panel>
+      </a-collapse>
 
       <a-form-item>
         <a-button type="primary" html-type="submit" :icon="h(SaveOutlined)">Salvar</a-button>

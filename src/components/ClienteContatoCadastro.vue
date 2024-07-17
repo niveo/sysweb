@@ -33,7 +33,7 @@ const formState = reactive<FormState>({
   emails: []
 })
 const codigoRegistro = ref()
-const codigoClienteRegistro = ref()
+const codigoReferencia = ref()
 const formRef = ref()
 
 const afterOpenChange = (bool: boolean) => {
@@ -53,7 +53,7 @@ const tratarArrayInput = (registros: any[]) => {
 
 const editarRegistro = (registro: any) => {
   codigoRegistro.value = registro.codigo
-  codigoClienteRegistro.value = registro.cliente
+  codigoReferencia.value = registro.codigoReferencia
   formState.observacao = registro.observacao
   formState.nome = registro.nome
   formState.cargo = registro.cargo
@@ -66,7 +66,7 @@ function salvarRegistro(values: any) {
   service
     .salvar({
       codigo: codigoRegistro.value,
-      cliente: codigoClienteRegistro.value,
+      cliente: codigoReferencia.value,
       observacao: values.observacao,
       nome: values.nome,
       cargo: values.cargo,
@@ -75,7 +75,7 @@ function salvarRegistro(values: any) {
     })
     .then((data) => {
       codigoRegistro.value = data.codigo
-      codigoClienteRegistro.value = data.cliente
+      codigoReferencia.value = data.cliente
       notification.success({
         description: MSG_REGISTRO_SALVO_SUCESSO
       })

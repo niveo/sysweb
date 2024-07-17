@@ -1,24 +1,27 @@
 <script setup lang="ts">
-import { ClienteEnderecoServiceKey, NotificationServiceKey } from '../service/key'
+import { NotificationServiceKey } from '../../service/key'
 import { onMounted, defineExpose, inject, ref, h, computed } from 'vue'
 import { EditOutlined, DeleteFilled } from '@ant-design/icons-vue'
-import { MediaQuery, useBreakpoints } from '../common/utils'
+import { MediaQuery, useBreakpoints } from '../../common/utils'
 import {
   MSG_REGISTRO_REMOVER_ERRO,
   MSG_REGISTRO_REMOVIDO_SUCESSO,
   MSG_REGISTRO_OBTER_ERRO
-} from '../common/constantes'
+} from '../../common/constantes'
+import api from '@/api'
+
+const props = defineProps<{
+  codigo: number
+  componenteCastro: any
+  path: string
+  descriptions: any[]
+}>()
 
 const { mediaQuery } = useBreakpoints()
-
-const service = inject<any>(ClienteEnderecoServiceKey)!!
 const notification = inject<any>(NotificationServiceKey)!!
 const registros: Record<string, string>[] = []
-const props = defineProps<{
-  cliente: number
-}>()
 const updateGridRegistros = ref(false)
-const cadastroClienteEndereco = ref()
+const refView = ref()
 
 onMounted(() => {
   carregarRegistro()
@@ -26,10 +29,10 @@ onMounted(() => {
 
 function carregarRegistro() {
   registros.splice(0, registros.length + 1)
-  service
-    .obterRegistros(props.cliente)
-    .then((data: any) => {
-      registros.push(...data)
+  api
+    .get(`${props.path}/${props.codigo}`)
+    .then((response: any) => {
+      registros.push(...response.data)
       updateGridRegistros.value = !updateGridRegistros.value
     })
     .catch((error: any) => {
@@ -43,16 +46,16 @@ function carregarRegistro() {
 }
 
 function novoRegistro() {
-  cadastroClienteEndereco.value.editarRegistro({ cliente: props.cliente })
+  refView.value.editarRegistro({ codigoReferencia: props.codigo })
 }
 
 function editarRegistro(value: any) {
-  cadastroClienteEndereco.value.editarRegistro(value)
+  refView.value.editarRegistro(value)
 }
 
 function removerRegistro(registro: any) {
-  service
-    .remover(registro.codigo)
+  api
+    .delete(`${props.path}/${registro.codigo}`)
     .then(() => {
       notification.success({
         description: MSG_REGISTRO_REMOVIDO_SUCESSO
@@ -92,24 +95,17 @@ defineExpose({ novoRegistro })
           </PopConfirmarRemoverRegistro>
         </template>
         <a-descriptions bordered :layout="layoute">
-          <a-descriptions-item label="Logradouro" :span="2">
-            {{ item.endereco.logradouro }}</a-descriptions-item
+          <a-descriptions-item
+            :label="description.label"
+            :span="description.span"
+            v-for="description of descriptions"
+            :key="description"
           >
-          <a-descriptions-item label="Número"> {{ item.endereco.numero }}</a-descriptions-item>
-
-          <a-descriptions-item label="Bairro" :span="2">
-            {{ item.endereco.bairro.descricao }}</a-descriptions-item
-          >
-          <a-descriptions-item label="Cidade" :span="2">
-            {{ item.endereco.cidade.descricao }}</a-descriptions-item
-          >
-          <a-descriptions-item label="Estado">
-            {{ item.endereco.cidade.estado.descricao }} -
-            {{ item.endereco.cidade.estado.sigla }}</a-descriptions-item
-          >
+            {{ description.data(item) }}
+          </a-descriptions-item>
         </a-descriptions>
       </a-list-item>
     </template>
   </a-list>
-  <ClienteCadastroEndereco ref="cadastroClienteEndereco" @outRegistro="carregarRegistro" />
+  <component :is="componenteCastro" ref="refView" @outRegistro="carregarRegistro"></component>
 </template>

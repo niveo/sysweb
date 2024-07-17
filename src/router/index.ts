@@ -23,7 +23,7 @@ const router = createRouter({
     {
       path: '/clientes',
       name: 'clientes',
-      component: () => import('../views/GlobalGradeView.vue'),
+      component: () => import('../components/common/GlobalGradeView.vue'),
       props: {
         codigo: 3
       }
@@ -46,7 +46,7 @@ const router = createRouter({
     {
       path: '/empresas',
       name: 'empresas',
-      component: () => import('../views/GlobalGradeView.vue'),
+      component: () => import('../components/common/GlobalGradeView.vue'),
       props: {
         codigo: 2
       }
@@ -64,7 +64,7 @@ const router = createRouter({
     {
       path: '/produtos',
       name: 'produtos',
-      component: () => import('../views/GlobalGradeView.vue'),
+      component: () => import('../components/common/GlobalGradeView.vue'),
       props: {
         codigo: 1
       }
