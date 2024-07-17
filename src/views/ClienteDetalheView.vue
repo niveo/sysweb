@@ -3,24 +3,18 @@ import { useRoute, useRouter } from 'vue-router'
 import { reactive, computed, h, onMounted, inject, ref, toRaw } from 'vue'
 import { vMaska } from 'maska/vue'
 import { SaveOutlined, PlusCircleOutlined } from '@ant-design/icons-vue'
-import { CepServiceKey, ClienteServiceKey, NotificationServiceKey } from '../service/key'
+import { ClienteServiceKey, NotificationServiceKey } from '../service/key'
 import { lancarPaginaErro, validateMessagesForm } from '../common/utils'
-import {
-  MSG_REGISTRO_SALVAR_ERRO,
-  MSG_REGISTRO_SALVO_SUCESSO,
-  MSG_REGISTRO_OBTER_ERRO
-} from '../common/constantes'
+import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '../common/constantes'
 import type { CodigoDescricaoModel } from '../model/CodigoDescricaoModel'
 
 const router = useRouter()
 const route = useRoute()
 const clienteService = inject<any>(ClienteServiceKey)!!
-const cepService = inject<any>(CepServiceKey)!!
 const notification = inject<any>(NotificationServiceKey)!!
 const clienteListaContato = ref()
 const clienteListaEndereco = ref()
 const codigoRegistro = ref()
-const loadingPesquisaCep = ref(false)
 const activePanelKey = ref()
 
 interface FormState {
@@ -124,25 +118,11 @@ const onTabela = (tabela: any) => {
   formState.tabela = tabela
 }
 
-function onPesquisarCep(cep: string) {
-  loadingPesquisaCep.value = true
-  cepService
-    .pesquisar(cep)
-    .then((data: any) => {
-      if (data) {
-        formState.endereco.logradouro = data.logradouro
-        formState.endereco.cidade = data.cidade
-        formState.endereco.bairro = data.bairro
-      }
-    })
-    .catch((error: any) => {
-      notification.error({
-        message: 'Erro',
-        description: MSG_REGISTRO_OBTER_ERRO,
-        error: error
-      })
-    })
-    .finally(() => (loadingPesquisaCep.value = false))
+function onPesquisarCep(data: any) {
+  if (!data) return
+  formState.endereco.logradouro = data.logradouro
+  formState.endereco.cidade = data.cidade
+  formState.endereco.bairro = data.bairro
 }
 
 function handleNovoContato(event: MouseEvent) {
@@ -231,14 +211,7 @@ function handleNovoEndereco(event: MouseEvent) {
       <h5>Endereço</h5>
 
       <a-form-item label="CEP" :name="['endereco', 'cep']" :rules="[{ required: true }]">
-        <a-input-search
-          v-model:value="formState.endereco.cep"
-          :maxlength="9"
-          v-maska="'#####-###'"
-          :loading="loadingPesquisaCep"
-          enter-button
-          @search="onPesquisarCep"
-        />
+        <InputCepComponent v-model:value="formState.endereco.cep" @outRegistro="onPesquisarCep" />
       </a-form-item>
 
       <a-form-item

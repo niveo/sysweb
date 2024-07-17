@@ -5,7 +5,7 @@ import type { DrawerProps } from 'ant-design-vue'
 import type { PagedModel } from '../model/PagedModel'
 import { useRouter, useRoute } from 'vue-router'
 import { lancarPaginaErro } from '@/common/utils'
-import { ConfiguracaoViewServiceKey } from '@/service/key'
+import { ConfiguracaoGradeServiceKey } from '@/service/key/ConfiguracaoGradeServiceKey'
 import api from '@/api'
 const props = defineProps({
   codigo: {
@@ -15,7 +15,7 @@ const props = defineProps({
 })
 
 const router = useRouter()
-const confService = inject<any>(ConfiguracaoViewServiceKey)!!
+const confService = inject<any>(ConfiguracaoGradeServiceKey)!!
 const open = ref<boolean>(true)
 const placement = ref<DrawerProps['placement']>('left')
 const page = reactive<PagedModel>({})
@@ -32,7 +32,7 @@ const onClose = () => {
   open.value = false
 }
 
-const onFiltrar = (currentPage = 1) => {
+const onCarregarRegistros = (currentPage = 1) => {
   onClose()
 
   const condicoes = JSON.stringify(toRaw(formState))
@@ -57,15 +57,19 @@ function onIncluir() {
 
 let formItens: any[] = []
 
-const onSubmit = () => {
+const onSubmit = (currentPage = 1) => {
   formRef.value
     .validate()
     .then(() => {
-      onFiltrar(1)
+      onCarregarRegistros(currentPage)
     })
     .catch((error: any) => {
       console.log('error', error)
     })
+}
+
+const onFiltrar = () => {
+  onSubmit(1)
 }
 
 const onValueInput = (event: any, item: any) => {
@@ -106,7 +110,7 @@ onMounted(() => {
     >
       <template #extra>
         <a-button style="margin-right: 8px" @click="onClose">Sair</a-button>
-        <a-button type="primary" @click="onSubmit">Filtrar</a-button>
+        <a-button type="primary" @click="onFiltrar">Filtrar</a-button>
       </template>
 
       <a-form

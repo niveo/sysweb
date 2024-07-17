@@ -15,9 +15,11 @@ interface FormState {
   descricao?: string
   referencia?: string
   observacao?: string
+  complemento?: string
+  ativo: boolean
 }
 
-const formState = reactive<FormState>({})
+const formState = reactive<FormState>({ ativo: false })
 
 let codigoRegistro = ref()
 
@@ -50,6 +52,8 @@ onMounted(() => {
         formState.descricao = data.descricao
         formState.referencia = data.referencia
         formState.observacao = data.observacao
+        formState.complemento = data.complemento
+        formState.ativo = data.ativo
       })
       .catch((error: any) => {
         router.push({ name: 'error', params: { error: error } })
@@ -76,7 +80,15 @@ const validateMessages = validateMessagesForm
       </a-form-item>
 
       <a-form-item label="Referência" name="referencia" :rules="[{ required: true }]">
-        <a-input v-model:value="formState.referencia" :maxlength="255" />
+        <a-input v-model:value="formState.referencia" :maxlength="50" />
+      </a-form-item>
+
+      <a-form-item label="Complemento" name="complemento">
+        <a-input v-model:value="formState.complemento" :maxlength="255" />
+      </a-form-item>
+
+      <a-form-item label="Ativo" name="ativo" :rules="[{ required: true }]">
+        <a-switch v-model:checked="formState.ativo" />
       </a-form-item>
 
       <a-form-item label="Observação" name="observacao">

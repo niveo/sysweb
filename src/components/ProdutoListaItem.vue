@@ -41,6 +41,9 @@ function removerRegistro() {
       <a-descriptions-item label="Referência">
         {{ model.referencia }}
       </a-descriptions-item>
+      <a-descriptions-item label="Ativo">
+        {{ model.ativo ? 'Sim' : 'Não' }}
+      </a-descriptions-item>
     </a-descriptions>
   </a-list-item>
 </template>

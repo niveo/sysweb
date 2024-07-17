@@ -12,8 +12,9 @@ import {
 
 import { UsuarioServiceKey } from './service/key/UsuarioServiceKey'
 import { inject, ref, h } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 const router = useRouter()
+const route = useRoute()
 const openLaunch = ref(false)
 
 const usuarioService = inject(UsuarioServiceKey)!!
@@ -29,7 +30,7 @@ const listaModulos = ref([
 
 const navTo = (rota: string) => {
   openLaunch.value = false
-  router.push(rota)
+  router.push({ path: rota })
 }
 </script>
 <template>
@@ -68,7 +69,7 @@ const navTo = (rota: string) => {
       </Popover>
     </LayoutHeader>
 
-    <LayoutContent class="content">
+    <LayoutContent class="content" :key="route.path">
       <RouterView />
     </LayoutContent>
   </Layout>

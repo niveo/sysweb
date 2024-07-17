@@ -1,3 +1,3 @@
-export interface ConfiguracaoViewService {
+export interface ConfiguracaoGradeService {
   obterCodigo(codigo: number): Promise<any>
 }
