@@ -61,6 +61,7 @@ const router = createRouter({
       name: 'empresas_cadastrar',
       component: () => import('../views/EmpresaDetalheView.vue')
     },
+
     {
       path: '/produtos',
       name: 'produtos',
@@ -79,6 +80,26 @@ const router = createRouter({
       name: 'produtos_cadastrar',
       component: () => import('../views/ProdutoDetalheView.vue')
     },
+
+    {
+      path: '/tabelaprecos',
+      name: 'tabelaprecos',
+      component: () => import('../components/common/GlobalGradeView.vue'),
+      props: {
+        codigo: 4
+      }
+    },
+    {
+      path: '/tabelaprecos/:codigo',
+      name: 'tabelaprecos_detalhe',
+      component: () => import('../views/TabelaPrecoDetalheView.vue')
+    },
+    {
+      path: '/tabelaprecos',
+      name: 'tabelaprecos_cadastrar',
+      component: () => import('../views/TabelaPrecoDetalheView.vue')
+    },
+
     {
       path: '/configuracoes',
       name: 'configuracoes',

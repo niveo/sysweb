@@ -80,6 +80,11 @@ app.component(
 )
 
 app.component(
+  'LT_04',
+  defineAsyncComponent(() => import('./components/TabelaPrecoListaItem.vue'))
+)
+
+app.component(
   'CP_01',
   defineAsyncComponent(() => import('./components/ui/InputComponent.vue'))
 )

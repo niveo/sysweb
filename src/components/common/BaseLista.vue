@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NotificationServiceKey } from '../../service/key'
-import { onMounted, defineExpose, inject, ref, h, computed } from 'vue'
+import { onMounted, defineExpose, inject, ref, h, computed, reactive } from 'vue'
 import { EditOutlined, DeleteFilled } from '@ant-design/icons-vue'
 import { MediaQuery, useBreakpoints } from '../../common/utils'
 import {
@@ -9,6 +9,8 @@ import {
   MSG_REGISTRO_OBTER_ERRO
 } from '../../common/constantes'
 import api from '@/api'
+import { PagedModel } from '../../model/PagedModel'
+import PaginationPageModel from '../PaginationPageModel.vue'
 
 const props = defineProps<{
   codigo: number
@@ -19,20 +21,24 @@ const props = defineProps<{
 
 const { mediaQuery } = useBreakpoints()
 const notification = inject<any>(NotificationServiceKey)!!
-const registros: Record<string, string>[] = []
 const updateGridRegistros = ref(false)
 const refView = ref()
+const page = reactive<PagedModel>({})
 
 onMounted(() => {
-  carregarRegistro()
+  onCarregarRegistros()
 })
 
-function carregarRegistro() {
-  registros.splice(0, registros.length + 1)
+function onCarregarRegistros(currentPage = 1) {
   api
-    .get(`${props.path}/${props.codigo}`)
+    .get(`${props.path}/${props.codigo}`, {
+      params: {
+        page: currentPage
+      }
+    })
     .then((response: any) => {
-      registros.push(...response.data)
+      page.page = response.data.page
+      page.content = response.data.content
       updateGridRegistros.value = !updateGridRegistros.value
     })
     .catch((error: any) => {
@@ -50,7 +56,7 @@ function novoRegistro() {
 }
 
 function editarRegistro(value: any) {
-  refView.value.editarRegistro(value)
+  refView.value.editarRegistro({ ...value, codigoReferencia: props.codigo })
 }
 
 function removerRegistro(registro: any) {
@@ -60,7 +66,7 @@ function removerRegistro(registro: any) {
       notification.success({
         description: MSG_REGISTRO_REMOVIDO_SUCESSO
       })
-      carregarRegistro()
+      onCarregarRegistros()
     })
     .catch((error: any) => {
       console.error(error)
@@ -80,12 +86,8 @@ defineExpose({ novoRegistro })
 </script>
 
 <template>
-  <a-list
-    item-layout="vertical"
-    :data-source="registros"
-    :pagination="{ pageSize: 3 }"
-    :key="updateGridRegistros"
-  >
+  <PaginationPageModel :page="page.page" @onChange="onCarregarRegistros" v-if="page.page" />
+  <a-list item-layout="vertical" :data-source="page.content" :key="updateGridRegistros">
     <template #renderItem="{ item }">
       <a-list-item key="item.codigo">
         <template #actions>
@@ -107,5 +109,5 @@ defineExpose({ novoRegistro })
       </a-list-item>
     </template>
   </a-list>
-  <component :is="componenteCastro" ref="refView" @outRegistro="carregarRegistro"></component>
+  <component :is="componenteCastro" ref="refView" @outRegistro="onCarregarRegistros(1)"></component>
 </template>

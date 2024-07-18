@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { ProdutoUnidadeServiceKey } from '../service/key'
 import { defineEmits, defineExpose, inject, ref, reactive, h, toRaw, computed } from 'vue'
-import {
-  SaveOutlined,
-  MinusCircleOutlined,
-  PhoneOutlined,
-  MailOutlined
-} from '@ant-design/icons-vue'
+import { SaveOutlined, PlusCircleOutlined } from '@ant-design/icons-vue'
 import { validateMessagesForm } from '../common/utils'
 import { NotificationServiceKey } from '../service/key/NotificationServiceKey'
 import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '../common/constantes'
@@ -55,6 +50,10 @@ const editarRegistro = (registro: any) => {
   formState.tipoBarra = registro.tipoBarra || TipoUnidadeBarra.EAN13
 
   open.value = true
+}
+
+const novoRegistro = () => {
+  editarRegistro({ codigoReferencia: codigoReferencia.value })
 }
 
 function salvarRegistro(values: any) {
@@ -126,6 +125,9 @@ defineExpose({ editarRegistro })
     placement="right"
     @after-open-change="afterOpenChange"
   >
+    <template #extra>
+      <a-button type="primary" :icon="h(PlusCircleOutlined)" @click="novoRegistro"> </a-button>
+    </template>
     <template #footer>
       <a-button type="primary" :icon="h(SaveOutlined)" @click="onSubmit">Salvar</a-button>
     </template>

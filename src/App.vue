@@ -7,7 +7,8 @@ import {
   AppstoreOutlined,
   HomeOutlined,
   SettingOutlined,
-  WindowsOutlined
+  WindowsOutlined,
+  MoneyCollectOutlined
 } from '@ant-design/icons-vue'
 
 import { UsuarioServiceKey } from './service/key/UsuarioServiceKey'
@@ -25,6 +26,7 @@ const listaModulos = ref([
   { rota: '/usuarios', descricao: 'Usuários', icone: UserOutlined },
   { rota: '/empresas', descricao: 'Empresas', icone: TeamOutlined },
   { rota: '/produtos', descricao: 'Produtos', icone: WindowsOutlined },
+  { rota: '/tabelaprecos', descricao: 'Tabela de Preço', icone: MoneyCollectOutlined },
   { rota: '/configuracoes', descricao: 'Configurações', icone: SettingOutlined }
 ])
 
