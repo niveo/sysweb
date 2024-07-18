@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ProdutoUnidadeServiceKey } from '../service/key'
-import { defineEmits, defineExpose, inject, ref, reactive, h, toRaw } from 'vue'
+import { defineEmits, defineExpose, inject, ref, reactive, h, toRaw, computed } from 'vue'
 import {
   SaveOutlined,
   MinusCircleOutlined,
@@ -10,16 +10,18 @@ import {
 import { validateMessagesForm } from '../common/utils'
 import { NotificationServiceKey } from '../service/key/NotificationServiceKey'
 import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '../common/constantes'
+import { TipoUnidadeBarra, TipoUnidadeOperacao } from '../enuns'
+import { RadioGroupProps } from 'ant-design-vue'
 
 const emits = defineEmits(['outRegistro'])
 
 interface FormState {
   barra?: string
   unidade?: any
-  tipoOperacao?: string
+  tipoOperacao?: TipoUnidadeOperacao
   quantidade?: number
   valor?: number
-  tipoBarra?: string
+  tipoBarra?: TipoUnidadeBarra
 }
 
 const service = inject(ProdutoUnidadeServiceKey)!!
@@ -29,8 +31,8 @@ const validateMessages = validateMessagesForm
 const formState = reactive<FormState>({
   barra: '',
   unidade: {},
-  tipoOperacao: 'MULTIPLICA',
-  tipoBarra: 'EAN13'
+  tipoOperacao: TipoUnidadeOperacao.MULTIPLICA,
+  tipoBarra: TipoUnidadeBarra.EAN13
 })
 const codigoRegistro = ref()
 const codigoReferencia = ref()
@@ -47,10 +49,10 @@ const editarRegistro = (registro: any) => {
   codigoReferencia.value = registro.codigoReferencia
   formState.barra = registro.barra
   formState.unidade = registro.unidade
-  formState.tipoOperacao = registro.tipoOperacao || 'MULTIPLICA'
+  formState.tipoOperacao = registro.tipoOperacao || TipoUnidadeOperacao.MULTIPLICA
   formState.quantidade = registro.quantidade
   formState.valor = registro.valor
-  formState.tipoBarra = registro.tipoBarra || 'EAN13'
+  formState.tipoBarra = registro.tipoBarra || TipoUnidadeBarra.EAN13
 
   open.value = true
 }
@@ -61,7 +63,7 @@ function salvarRegistro(values: any) {
       codigo: codigoRegistro.value,
       produto: codigoReferencia.value,
       barra: values.barra,
-      unidade: values.unidade.codigo,
+      unidade: values.unidade,
       tipoOperacao: values.tipoOperacao,
       quantidade: values.quantidade,
       valor: values.valor,
@@ -100,6 +102,20 @@ const onUnidade = (unidade: any) => {
   formState.unidade = unidade
 }
 
+const lengthCodigoBarra = computed(() => {
+  return formState.tipoBarra === TipoUnidadeBarra.EAN13 ? 13 : 14
+})
+
+const optionsTipoOperacao: RadioGroupProps['options'] = [
+  { label: 'Multiplica', value: TipoUnidadeOperacao.MULTIPLICA },
+  { label: 'Divide', value: TipoUnidadeOperacao.DIVITE }
+]
+
+const optionsTipoBarra: RadioGroupProps['options'] = [
+  { label: 'EAN13', value: TipoUnidadeBarra.EAN13 },
+  { label: 'EAN14', value: TipoUnidadeBarra.EAN14 }
+]
+
 defineExpose({ editarRegistro })
 </script>
 
@@ -126,9 +142,7 @@ defineExpose({ editarRegistro })
       </a-form-item>
 
       <a-form-item label="Operação" name="tipoOperacao">
-        <a-radio-group v-model:value="formState.tipoOperacao">
-          <a-radio value="MULTIPLICA" :checked="true">Multiplica</a-radio>
-          <a-radio value="DIVITE">Divide</a-radio>
+        <a-radio-group v-model:value="formState.tipoOperacao" :options="optionsTipoOperacao">
         </a-radio-group>
       </a-form-item>
 
@@ -145,14 +159,16 @@ defineExpose({ editarRegistro })
       </a-form-item>
 
       <a-form-item label="Tipo" name="tipoBarra">
-        <a-radio-group v-model:value="formState.tipoBarra">
-          <a-radio value="EAN13" :checked="true">EAN13</a-radio>
-          <a-radio value="EAN14">EAN14</a-radio>
+        <a-radio-group v-model:value="formState.tipoBarra" :options="optionsTipoBarra">
         </a-radio-group>
       </a-form-item>
 
-      <a-form-item label="Barra" name="barra" :rules="[{ required: true }]">
-        <a-input v-model:value="formState.barra" :maxlength="14" />
+      <a-form-item
+        label="Código de Barra"
+        name="barra"
+        :rules="[{ required: true, min: lengthCodigoBarra, max: lengthCodigoBarra }]"
+      >
+        <a-input v-model:value="formState.barra" />
       </a-form-item>
     </a-form>
   </a-drawer>

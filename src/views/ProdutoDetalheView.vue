@@ -120,7 +120,7 @@ const validateMessages = validateMessagesForm
         ></a-textarea>
       </a-form-item>
 
-      <a-form-item label="Unidade" name="unidade" :rules="[{ required: true }]">
+      <a-form-item label="Unidade Padrão" name="unidade" :rules="[{ required: true }]">
         <UnidadePesquisaView :registro="formState.unidade" @outRegistro="onUnidade" />
       </a-form-item>
 
