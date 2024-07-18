@@ -26,10 +26,12 @@ const refView = ref()
 const page = reactive<PagedModel>({})
 
 onMounted(() => {
-  onCarregarRegistros()
+  onCarregarRegistros(1)
 })
 
 function onCarregarRegistros(currentPage = 1) {
+  console.log(currentPage)
+
   api
     .get(`${props.path}/${props.codigo}`, {
       params: {
@@ -86,17 +88,29 @@ defineExpose({ novoRegistro })
 </script>
 
 <template>
-  <PaginationPageModel :page="page.page" @onChange="onCarregarRegistros" v-if="page.page" />
+  <PaginationPageModel
+    :page="page.page"
+    @onChange="onCarregarRegistros"
+    v-if="page.page"
+    size="small"
+  />
   <a-list item-layout="vertical" :data-source="page.content" :key="updateGridRegistros">
     <template #renderItem="{ item }">
       <a-list-item key="item.codigo">
-        <template #actions>
-          <a-button type="primary" :icon="h(EditOutlined)" @click="editarRegistro(item)"></a-button>
-          <PopConfirmarRemoverRegistro @confirm="removerRegistro(item)">
-            <a-button type="primary" danger :icon="h(DeleteFilled)"></a-button>
-          </PopConfirmarRemoverRegistro>
-        </template>
-        <a-descriptions bordered :layout="layoute">
+        <a-descriptions bordered :layout="layoute" size="small">
+          <template #extra>
+            <a-space>
+              <a-button
+                type="primary"
+                size="small"
+                :icon="h(EditOutlined)"
+                @click="editarRegistro(item)"
+              ></a-button>
+              <PopConfirmarRemoverRegistro @confirm="removerRegistro(item)">
+                <a-button type="primary" size="small" danger :icon="h(DeleteFilled)"></a-button>
+              </PopConfirmarRemoverRegistro>
+            </a-space>
+          </template>
           <a-descriptions-item
             :label="description.label"
             :span="description.span"

@@ -38,9 +38,6 @@ function removerRegistro() {
       </template>
     </a-list-item-meta>
     <a-descriptions layout="vertical" bordered>
-      <a-descriptions-item label="Referência">
-        {{ model.referencia }}
-      </a-descriptions-item>
       <a-descriptions-item label="Ativo">
         {{ model.ativo ? 'Sim' : 'Não' }}
       </a-descriptions-item>

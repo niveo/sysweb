@@ -10,6 +10,8 @@ const route = useRoute()
 const router = useRouter()
 const service = inject<any>(TabelaPrecoServiceKey)!!
 const notification = inject<any>(NotificationServiceKey)!!
+const activePanelKey = ref()
+const tabelaPrecoLancamentoLista = ref()
 
 interface FormState {
   descricao?: string
@@ -56,6 +58,11 @@ onMounted(() => {
       })
 })
 
+function handleNovoTabelaPrecoLancamento(event: MouseEvent) {
+  tabelaPrecoLancamentoLista.value.novoRegistro()
+  event.stopPropagation()
+}
+
 const validateMessages = validateMessagesForm
 </script>
 
@@ -87,6 +94,22 @@ const validateMessages = validateMessagesForm
           type="textarea"
         ></a-textarea>
       </a-form-item>
+
+      <a-collapse v-model:activeKey="activePanelKey" accordion v-if="codigoRegistro">
+        <a-collapse-panel key="1" header="Barra">
+          <template #extra>
+            <a-button
+              @click="handleNovoTabelaPrecoLancamento"
+              :icon="h(PlusCircleOutlined)"
+              type="primary"
+              v-if="activePanelKey == 1"
+              >{{
+            }}</a-button>
+          </template>
+
+          <TabelaPrecoLancamentoLista :codigo="codigoRegistro" ref="tabelaPrecoLancamentoLista" />
+        </a-collapse-panel>
+      </a-collapse>
 
       <a-form-item>
         <a-button type="primary" html-type="submit" :icon="h(SaveOutlined)">Salvar</a-button>
