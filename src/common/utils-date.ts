@@ -7,25 +7,17 @@ dayjs.locale('pt-br')
 dayjs.extend(arraySupport)
 dayjs.extend(utc)
 dayjs.extend(timezone)
-
-const tz = 'America/Sao_Paulo'
-
-export class DateUtil {
+//const tz = 'America/Sao_Paulo'
+export class UtilsDate {
   static formatPTBR(date: any) {
-    console.log(date)
+    return UtilsDate.format(date, 'DD/MM/YYYY HH:mm:ss')
+  }
 
-    const dj = new dayjs(date)
-    console.log(dj.locale())
-
-    return dj.tz(tz).utc().format('DD/MM/YYYY HH:mm')
+  static format(date: any, format: string = 'YYYY-MM-DDTHH:mm:ss') {
+    return new dayjs(date).tz('America/Sao_Paulo').format(format)
   }
 
   static toDate(date: any) {
-    console.log(date)
-
-    const dj = new dayjs(date)
-    console.log(dj.locale())
-
-    return dj.tz(tz).utc()
+    return date ? new dayjs(date || new Date()) : new dayjs()
   }
 }

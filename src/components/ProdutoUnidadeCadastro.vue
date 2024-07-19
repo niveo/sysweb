@@ -140,7 +140,11 @@ defineExpose({ editarRegistro })
       :validate-messages="validateMessages"
     >
       <a-form-item label="Unidade" name="unidade" :rules="[{ required: true }]">
-        <UnidadePesquisaView :registro="formState.unidade" @outRegistro="onUnidade" />
+        <PesquisaRegistroComponenteView
+          :codigo="7"
+          :registro="formState.unidade"
+          @outRegistro="onUnidade"
+        />
       </a-form-item>
 
       <a-form-item label="Operação" name="tipoOperacao">

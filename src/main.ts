@@ -18,10 +18,11 @@ import {
   RedeClienteServiceKey,
   TabelaPrecoServiceKey,
   ProdutoServiceKey,
-  ConfiguracaoGradeServiceKey,
+  ConfiguracaoPesquisaServiceKey,
   UnidadeServiceKey,
   ProdutoUnidadeServiceKey,
-  TabelaPrecoLancamentoServiceKey
+  TabelaPrecoLancamentoServiceKey,
+  TabelaPrecoProdutoServiceKey
 } from './service/key'
 import {
   UsuarioServiceImpl,
@@ -38,10 +39,11 @@ import {
   RedeClienteServiceImpl,
   TabelaPrecoServiceImpl,
   ProdutoServiceImpl,
-  ConfiguracaoGradeServiceImpl,
+  ConfiguracaoPesquisaServiceImpl,
   UnidadeServiceImpl,
   ProdutoUnidadeServiceImpl,
-  TabelaPrecoLancamentoServiceimpl
+  TabelaPrecoLancamentoServiceimpl,
+  TabelaPrecoProdutoServiceImpl
 } from './service/impl/'
 
 const app = createApp(App)
@@ -62,10 +64,11 @@ app.provide(SegmentoClienteServiceKey, new SegmentoClienteServiceImpl())
 app.provide(RedeClienteServiceKey, new RedeClienteServiceImpl())
 app.provide(TabelaPrecoServiceKey, new TabelaPrecoServiceImpl())
 app.provide(ProdutoServiceKey, new ProdutoServiceImpl())
-app.provide(ConfiguracaoGradeServiceKey, new ConfiguracaoGradeServiceImpl())
+app.provide(ConfiguracaoPesquisaServiceKey, new ConfiguracaoPesquisaServiceImpl())
 app.provide(UnidadeServiceKey, new UnidadeServiceImpl())
 app.provide(ProdutoUnidadeServiceKey, new ProdutoUnidadeServiceImpl())
 app.provide(TabelaPrecoLancamentoServiceKey, new TabelaPrecoLancamentoServiceimpl())
+app.provide(TabelaPrecoProdutoServiceKey, new TabelaPrecoProdutoServiceImpl())
 
 app.component(
   'LT_01',
@@ -90,6 +93,31 @@ app.component(
 app.component(
   'CP_01',
   defineAsyncComponent(() => import('./components/ui/InputComponent.vue'))
+)
+
+app.component(
+  'CA_01',
+  defineAsyncComponent(() => import('./components/BairroCadastro.vue'))
+)
+
+app.component(
+  'CA_02',
+  defineAsyncComponent(() => import('./components/CidadeCadastro.vue'))
+)
+
+app.component(
+  'CA_03',
+  defineAsyncComponent(() => import('./components/UnidadeCadastroView.vue'))
+)
+
+app.component(
+  'CA_04',
+  defineAsyncComponent(() => import('./components/RedeClienteCadastroView.vue'))
+)
+
+app.component(
+  'CA_05',
+  defineAsyncComponent(() => import('./components/SegmentoClienteCadastroView.vue'))
 )
 
 app.mount('#app')

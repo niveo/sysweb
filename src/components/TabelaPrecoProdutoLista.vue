@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import ProdutoUnidadeCadastro from './ProdutoUnidadeCadastro.vue'
+import TabelaPrecoProdutoCadastro from './TabelaPrecoProdutoCadastro.vue'
 import BaseLista from './common/BaseLista.vue'
 import type { DescriptionModel } from '@/model/DescriptionModel'
+import { UtilsNumber } from '@/common/utils-number'
+
 defineProps<{
   codigo: number
 }>()
@@ -12,10 +14,11 @@ function novoRegistro() {
 }
 
 const description: DescriptionModel = {
+  title: (item: any) => `${item.produto.codigo} - ${item.produto.referencia}`,
   descriptions: [
     {
-      label: 'Barra',
-      data: (item: any) => item.barra
+      label: 'Valor',
+      data: (item: any) => UtilsNumber.format(item.valor)
     }
   ]
 }
@@ -25,9 +28,9 @@ defineExpose({ novoRegistro })
 <template>
   <BaseLista
     ref="refView"
-    :componenteCastro="ProdutoUnidadeCadastro"
+    :componenteCastro="TabelaPrecoProdutoCadastro"
     :codigo="codigo"
-    path="/produtounidades"
+    path="/tabelaprecoprodutos"
     :description="description"
   >
   </BaseLista>

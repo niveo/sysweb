@@ -175,11 +175,19 @@ defineExpose({ editarRegistro })
       </a-form-item>
 
       <a-form-item label="Cidade" name="cidade" :rules="[{ required: true }]">
-        <CidadePesquisa :registro="formState.cidade" @outRegistro="onCidade" />
+        <PesquisaRegistroComponenteView
+          :codigo="6"
+          :registro="formState.cidade"
+          @outRegistro="onCidade"
+        />
       </a-form-item>
 
       <a-form-item label="Bairro" name="bairro" :rules="[{ required: true }]">
-        <BairroPesquisa :registro="formState.bairro" @outRegistro="onBairro" />
+        <PesquisaRegistroComponenteView
+          :codigo="5"
+          :registro="formState.bairro"
+          @outRegistro="onBairro"
+        />
       </a-form-item>
 
       <a-form-item label="Complemento" name="complemento">

@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import ClienteContatoCadastro from './ClienteContatoCadastro.vue'
 import BaseLista from './common/BaseLista.vue'
+import type { DescriptionModel } from '@/model/DescriptionModel'
 defineProps<{
   cliente: number
 }>()
@@ -9,31 +10,35 @@ const refView = ref()
 function novoRegistro() {
   refView.value.novoRegistro()
 }
-const descriptions: any[] = [
-  {
-    label: 'Nome',
-    data: (item: any) => item.nome
-  },
-  {
-    label: 'Cargo',
-    data: (item: any) => item.cargo
-  },
-  {
-    label: 'Telefones',
-    span: 2,
-    data: (item: any) => item.telefones?.join(' / ')
-  },
-  {
-    label: 'E-mails',
-    span: 2,
-    data: (item: any) => item.emails?.join(' / ')
-  },
-  {
-    label: 'Observação',
-    span: 2,
-    data: (item: any) => item.observacao
-  }
-]
+
+const description: DescriptionModel = {
+  descriptions: [
+    {
+      label: 'Nome',
+      data: (item: any) => item.nome
+    },
+    {
+      label: 'Cargo',
+      data: (item: any) => item.cargo
+    },
+    {
+      label: 'Telefones',
+      span: 2,
+      data: (item: any) => item.telefones?.join(' / ')
+    },
+    {
+      label: 'E-mails',
+      span: 2,
+      data: (item: any) => item.emails?.join(' / ')
+    },
+    {
+      label: 'Observação',
+      span: 2,
+      data: (item: any) => item.observacao
+    }
+  ]
+}
+
 defineExpose({ novoRegistro })
 </script>
 
@@ -43,7 +48,7 @@ defineExpose({ novoRegistro })
     :componenteCastro="ClienteContatoCadastro"
     :codigo="cliente"
     path="/clientecontatos"
-    :descriptions="descriptions"
+    :description="description"
   >
   </BaseLista>
 </template>

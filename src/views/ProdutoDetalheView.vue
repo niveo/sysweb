@@ -125,7 +125,11 @@ const validateMessages = validateMessagesForm
         :name="['unidade', 'codigo']"
         :rules="[{ required: true }]"
       >
-        <UnidadePesquisaView :registro="formState.unidade" @outRegistro="onUnidade" />
+        <PesquisaRegistroComponenteView
+          :codigo="7"
+          :registro="formState.unidade"
+          @outRegistro="onUnidade"
+        />
       </a-form-item>
 
       <a-collapse v-model:activeKey="activePanelKey" accordion v-if="codigoRegistro">

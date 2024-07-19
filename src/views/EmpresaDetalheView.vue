@@ -189,11 +189,19 @@ function onPesquisarCep(data: any) {
       </a-form-item>
 
       <a-form-item label="Cidade" :name="['endereco', 'cidade']" :rules="[{ required: true }]">
-        <CidadePesquisa :registro="formState.endereco.cidade" @outRegistro="onCidade" />
+        <PesquisaRegistroComponenteView
+          :codigo="6"
+          :registro="formState.endereco.cidade"
+          @outRegistro="onCidade"
+        />
       </a-form-item>
 
       <a-form-item label="Bairro" :name="['endereco', 'bairro']" :rules="[{ required: true }]">
-        <BairroPesquisa :registro="formState.endereco.bairro" @outRegistro="onBairro" />
+        <PesquisaRegistroComponenteView
+          :codigo="5"
+          :registro="formState.endereco.bairro"
+          @outRegistro="onBairro"
+        />
       </a-form-item>
 
       <a-form-item label="Complemento" :name="['endereco', 'complemento']">

@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { Layout, LayoutHeader, LayoutContent, Button, Popover } from 'ant-design-vue'
+import {
+  Layout,
+  LayoutHeader,
+  LayoutContent,
+  Button,
+  Popover,
+  type DrawerProps
+} from 'ant-design-vue'
 import {
   UserOutlined,
   TeamOutlined,
@@ -29,6 +36,7 @@ const listaModulos = ref([
   { rota: '/tabelaprecos', descricao: 'Tabela de Preço', icone: MoneyCollectOutlined },
   { rota: '/configuracoes', descricao: 'Configurações', icone: SettingOutlined }
 ])
+const placement = ref<DrawerProps['placement']>('left')
 
 const navTo = (rota: string) => {
   openLaunch.value = false
@@ -50,25 +58,30 @@ const navTo = (rota: string) => {
         v-show="usuarioAutenticado"
         @click="navTo('/empresas')"
       ></Button>
-      <Popover v-model:open="openLaunch" trigger="click">
-        <template #content>
-          <div style="display: flex; flex-direction: column; gap: 5px">
-            <EmpresasUsuarioSelecao />
-            <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 5px">
-              <button
-                class="menuModuloButton"
-                @click="navTo(item.rota)"
-                v-for="item in listaModulos"
-                :key="item.descricao"
-              >
-                <component :is="item.icone" :style="{ fontSize: '34px', color: '#08c' }" />
-                <span class="menuModuloTxt">{{ item.descricao }}</span>
-              </button>
-            </div>
+
+      <Button
+        ghost
+        :icon="h(AppstoreOutlined)"
+        v-show="usuarioAutenticado"
+        @click="openLaunch = true"
+      ></Button>
+
+      <a-drawer :open="openLaunch" @close="openLaunch = false" :placement="placement">
+        <div style="display: flex; flex-direction: column; gap: 5px">
+          <EmpresasUsuarioSelecao />
+          <div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 5px">
+            <button
+              class="menuModuloButton"
+              @click="navTo(item.rota)"
+              v-for="item in listaModulos"
+              :key="item.descricao"
+            >
+              <component :is="item.icone" :style="{ fontSize: '34px', color: '#08c' }" />
+              <span class="menuModuloTxt">{{ item.descricao }}</span>
+            </button>
           </div>
-        </template>
-        <Button ghost :icon="h(AppstoreOutlined)" v-show="usuarioAutenticado"></Button>
-      </Popover>
+        </div>
+      </a-drawer>
     </LayoutHeader>
 
     <LayoutContent class="content" :key="route.path">

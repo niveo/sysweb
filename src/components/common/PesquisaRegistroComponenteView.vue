@@ -1,34 +1,30 @@
 <script setup lang="ts">
 import { ref, inject, toRaw, defineEmits, reactive, onMounted, h } from 'vue'
-import { NotificationServiceKey } from '../service/key'
+import { ConfiguracaoPesquisaServiceKey, NotificationServiceKey } from '../../service/key'
 import {
   PlusCircleOutlined,
   SearchOutlined,
   EditOutlined,
   DeleteOutlined
 } from '@ant-design/icons-vue'
-import { lancarPaginaErro } from '../common/utils'
-import type { PagedModel } from '../model/PagedModel'
+import { lancarPaginaErro } from '../../common/utils'
+import type { PagedModel } from '../../model/PagedModel'
 import { useRouter } from 'vue-router'
-import { MSG_REGISTRO_REMOVER_ERRO, MSG_REGISTRO_REMOVIDO_SUCESSO } from '../common/constantes'
+import { MSG_REGISTRO_REMOVER_ERRO, MSG_REGISTRO_REMOVIDO_SUCESSO } from '../../common/constantes'
+import api from '@/api'
+import type { ConfiguracaoPesquisaService } from '@/service'
+import type { SelectProps } from 'ant-design-vue'
 
 const props = defineProps({
-  serviceKey: {
-    type: Symbol,
-    required: true
-  },
-  componenteCadastro: {
-    type: Object,
-    required: false
-  },
-  descricao: {
-    type: String,
+  codigo: {
+    type: Number,
     required: true
   },
   registro: {
     type: Object,
     required: false
   },
+
   tipoEdicao: {
     type: Boolean,
     required: false,
@@ -36,27 +32,43 @@ const props = defineProps({
   },
   tipoCadastro: {
     type: Boolean,
-    default: true
+    default: false
   }
 })
 const emit = defineEmits(['outRegistro'])
 
 const router = useRouter()
 const page = reactive<PagedModel>({})
-const service = inject<any>(props.serviceKey)!!
 const notification = inject<any>(NotificationServiceKey)!!
 const dialogPesquisaVisible = ref(false)
 const dialogCadastroVisible = ref(false)
 const loadingPesquisa = ref(false)
 const valorPesquisa = ref('')
 const registroEdicao = ref()
+const serviceConfiguracao = inject<ConfiguracaoPesquisaService>(ConfiguracaoPesquisaServiceKey)!!
+const campoPesquisarSelecionado = ref()
+
+const optionsCampoPesquisar = ref<SelectProps['options']>([])
+
+let config: any = null
+const descricao = ref()
+const componenteCadastro = ref()
 
 const onFiltrar = (currentPage = 1) => {
-  service
-    .obterTodos(currentPage, { descricao: valorPesquisa.value })
+  const obPesquisa: any = {}
+  if (campoPesquisarSelecionado.value)
+    obPesquisa[campoPesquisarSelecionado.value] = valorPesquisa.value
+
+  api
+    .get(config.caminho, {
+      params: {
+        page: currentPage,
+        condicoes: JSON.stringify(obPesquisa)
+      }
+    })
     .then((response: any) => {
-      page.page = response.page
-      page.content = response.content
+      page.page = response.data.page
+      page.content = response.data.content
     })
     .catch((error: any) => {
       console.error(error)
@@ -83,8 +95,8 @@ function onEditarRegistro(registro: any) {
 }
 
 function onRemoverRegistro(registro: any) {
-  service
-    .remover(registro.codigo)
+  api
+    .delete(`${config.caminho}/${registro.codigo}`)
     .then(() => {
       notification.success({
         description: MSG_REGISTRO_REMOVIDO_SUCESSO
@@ -102,7 +114,12 @@ function onRemoverRegistro(registro: any) {
 }
 
 onMounted(() => {
-  if (props.tipoEdicao) onFiltrar(1)
+  serviceConfiguracao.obterCodigo(props.codigo).then((response) => {
+    descricao.value = response.descricao
+    optionsCampoPesquisar.value!!.push(...response.filtros)
+    componenteCadastro.value = response.componenteCadastro
+    config = response
+  })
 })
 </script>
 
@@ -139,10 +156,18 @@ onMounted(() => {
     </template>
 
     <template #footer>
-      <PaginationPageModel :page="page.page" @onChange="onFiltrar" size="small" />
+      <PaginationPageModel :page="page.page" @onChange="onFiltrar" size="small" v-if="page.page" />
     </template>
 
     <div style="display: flex; flex-direction: column; gap: 5px">
+      <a-select
+        v-model:value="campoPesquisarSelecionado"
+        :options="optionsCampoPesquisar"
+        v-bind="config"
+        :field-names="{ label: 'descricao', value: 'campo' }"
+      >
+      </a-select>
+
       <a-input-search
         v-model:value="valorPesquisa"
         autofocus
@@ -152,7 +177,7 @@ onMounted(() => {
       >
       </a-input-search>
 
-      <a-list :data-source="page.content">
+      <a-list :data-source="page.content" v-if="page.page">
         <template #renderItem="{ item }">
           <a-list-item
             style="cursor: pointer; border-bottom: 1px solid #d9d9d9"
@@ -187,5 +212,3 @@ onMounted(() => {
     </a-drawer>
   </a-drawer>
 </template>
-
-<style scoped></style>

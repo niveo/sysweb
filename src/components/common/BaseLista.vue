@@ -11,12 +11,13 @@ import {
 import api from '@/api'
 import { PagedModel } from '../../model/PagedModel'
 import PaginationPageModel from '../PaginationPageModel.vue'
+import type { DescriptionModel } from '@/model/DescriptionModel'
 
 const props = defineProps<{
   codigo: number
   componenteCastro: any
   path: string
-  descriptions: any[]
+  description: DescriptionModel
 }>()
 
 const { mediaQuery } = useBreakpoints()
@@ -30,8 +31,6 @@ onMounted(() => {
 })
 
 function onCarregarRegistros(currentPage = 1) {
-  console.log(currentPage)
-
   api
     .get(`${props.path}/${props.codigo}`, {
       params: {
@@ -98,6 +97,12 @@ defineExpose({ novoRegistro })
     <template #renderItem="{ item }">
       <a-list-item key="item.codigo">
         <a-descriptions bordered :layout="layoute" size="small">
+          <template #title>
+            <span v-if="description.title && description.title === 'string'">{{
+              description.title
+            }}</span>
+            <span v-else-if="description.title">{{ description.title(item) }}</span>
+          </template>
           <template #extra>
             <a-space>
               <a-button
@@ -112,12 +117,12 @@ defineExpose({ novoRegistro })
             </a-space>
           </template>
           <a-descriptions-item
-            :label="description.label"
-            :span="description.span"
-            v-for="description of descriptions"
-            :key="description"
+            :label="dec.label"
+            :span="dec.span"
+            v-for="dec of description.descriptions"
+            :key="dec"
           >
-            {{ description.data(item) }}
+            {{ dec.data(item) }}
           </a-descriptions-item>
         </a-descriptions>
       </a-list-item>

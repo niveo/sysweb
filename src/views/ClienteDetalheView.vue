@@ -197,15 +197,27 @@ function handleNovoEndereco(event: MouseEvent) {
       </a-form-item>
 
       <a-form-item label="Segmento" name="segmento">
-        <SegmentoClientePesquisaView :registro="formState.segmento" @outRegistro="onSegmento" />
+        <PesquisaRegistroComponenteView
+          :codigo="9"
+          :registro="formState.segmento"
+          @outRegistro="onSegmento"
+        />
       </a-form-item>
 
       <a-form-item label="Rede" name="rede">
-        <RedeClientePesquisaView :registro="formState.rede" @outRegistro="onRede" />
+        <PesquisaRegistroComponenteView
+          :codigo="8"
+          :registro="formState.rede"
+          @outRegistro="onRede"
+        />
       </a-form-item>
 
       <a-form-item label="Tabela de Preço" name="tabela">
-        <TabelaPrecoPesquisaView :registro="formState.tabela" @outRegistro="onTabela" />
+        <PesquisaRegistroComponenteView
+          :codigo="4"
+          :registro="formState.tabela"
+          @outRegistro="onTabela"
+        />
       </a-form-item>
 
       <h5>Endereço</h5>
@@ -227,11 +239,19 @@ function handleNovoEndereco(event: MouseEvent) {
       </a-form-item>
 
       <a-form-item label="Cidade" :name="['endereco', 'cidade']" :rules="[{ required: true }]">
-        <CidadePesquisa :registro="formState.endereco.cidade" @outRegistro="onCidade" />
+        <PesquisaRegistroComponenteView
+          :codigo="6"
+          :registro="formState.endereco.cidade"
+          @outRegistro="onCidade"
+        />
       </a-form-item>
 
       <a-form-item label="Bairro" :name="['endereco', 'bairro']" :rules="[{ required: true }]">
-        <BairroPesquisa :registro="formState.endereco.bairro" @outRegistro="onBairro" />
+        <PesquisaRegistroComponenteView
+          :codigo="5"
+          :registro="formState.endereco.bairro"
+          @outRegistro="onBairro"
+        />
       </a-form-item>
 
       <a-form-item label="Complemento" :name="['endereco', 'complemento']">

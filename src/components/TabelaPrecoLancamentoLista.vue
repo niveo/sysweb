@@ -2,7 +2,8 @@
 import { ref } from 'vue'
 import TabelaPrecoLancamentoCadastro from './TabelaPrecoLancamentoCadastro.vue'
 import BaseLista from './common/BaseLista.vue'
-import { DateUtil } from '../common/DateUtil'
+import type { DescriptionModel } from '@/model/DescriptionModel'
+import { UtilsDate } from '@/common/utils-date'
 
 defineProps<{
   codigo: number
@@ -12,12 +13,15 @@ function novoRegistro() {
   refView.value.novoRegistro()
 }
 
-const descriptions: any[] = [
-  {
-    label: 'Vigor',
-    data: (item: any) => DateUtil.formatPTBR(item.vigor)
-  }
-]
+const description: DescriptionModel = {
+  title: (item: any) => UtilsDate.formatPTBR(item.vigor),
+  descriptions: [
+    {
+      label: 'Percentual',
+      data: (item: any) => (item.percentual ? `${item.percentual}%` : '')
+    }
+  ]
+}
 defineExpose({ novoRegistro })
 </script>
 
@@ -27,7 +31,7 @@ defineExpose({ novoRegistro })
     :componenteCastro="TabelaPrecoLancamentoCadastro"
     :codigo="codigo"
     path="/tabelaprecolancamentos"
-    :descriptions="descriptions"
+    :description="description"
   >
   </BaseLista>
 </template>

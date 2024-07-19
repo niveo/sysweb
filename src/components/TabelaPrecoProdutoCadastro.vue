@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import { TabelaPrecoLancamentoServiceKey } from '../service/key'
-import { defineEmits, defineExpose, inject, ref, reactive, h, toRaw, computed } from 'vue'
+import { TabelaPrecoProdutoServiceKey } from '../service/key'
+import { defineEmits, defineExpose, inject, ref, reactive, h, toRaw } from 'vue'
 import { SaveOutlined, PlusCircleOutlined } from '@ant-design/icons-vue'
 import { validateMessagesForm } from '../common/utils'
 import { NotificationServiceKey } from '../service/key/NotificationServiceKey'
 import { MSG_REGISTRO_SALVAR_ERRO, MSG_REGISTRO_SALVO_SUCESSO } from '../common/constantes'
-import DatePickerComponent from '../components/ui/DatePickerComponent.vue'
-import { UtilsDate } from '@/common/utils-date'
+import PesquisaRegistroComponenteView from '../components/common/PesquisaRegistroComponenteView.vue'
 
 const emits = defineEmits(['outRegistro'])
 
 interface FormState {
-  vigor?: Date
-  percentual?: number
+  valor?: number
+  produto?: any
 }
 
-const service = inject(TabelaPrecoLancamentoServiceKey)!!
+const service = inject(TabelaPrecoProdutoServiceKey)!!
 const notification = inject<any>(NotificationServiceKey)!!
 const open = ref<boolean>(false)
 const validateMessages = validateMessagesForm
@@ -23,8 +22,6 @@ const formState = reactive<FormState>({})
 const codigoRegistro = ref()
 const codigoReferencia = ref()
 const formRef = ref()
-const activePanelKey = ref()
-const tabelaPrecoProdutoLista = ref()
 
 const afterOpenChange = (bool: boolean) => {
   if (!bool) {
@@ -35,8 +32,8 @@ const afterOpenChange = (bool: boolean) => {
 const editarRegistro = (registro: any) => {
   codigoRegistro.value = registro.codigo
   codigoReferencia.value = registro.codigoReferencia
-  formState.vigor = UtilsDate.toDate(registro.vigor)
-  formState.percentual = registro.percentual
+  formState.valor = registro.valor
+  formState.produto = registro.produto
 
   open.value = true
 }
@@ -49,13 +46,13 @@ function salvarRegistro(values: any) {
   service
     .salvar({
       codigo: codigoRegistro.value,
-      tabela: codigoReferencia.value,
-      vigor: UtilsDate.format(values.vigor),
-      percentual: values.percentual
+      lancamento: codigoReferencia.value,
+      valor: values.valor,
+      produto: values.produto.codigo
     })
     .then((data) => {
       codigoRegistro.value = data.codigo
-      codigoReferencia.value = data.tabela
+      codigoReferencia.value = data.lancamento
       notification.success({
         description: MSG_REGISTRO_SALVO_SUCESSO
       })
@@ -82,9 +79,8 @@ const onSubmit = () => {
     })
 }
 
-function handleNovoTabelaPrecoProduto(event: MouseEvent) {
-  tabelaPrecoProdutoLista.value.novoRegistro()
-  event.stopPropagation()
+const onProduto = (produto: any) => {
+  formState.produto = produto
 }
 
 defineExpose({ editarRegistro })
@@ -111,35 +107,17 @@ defineExpose({ editarRegistro })
       autocomplete="off"
       :validate-messages="validateMessages"
     >
-      <a-form-item label="Data Vigor" name="vigor" :rules="[{ required: true, type: 'date' }]">
-        <DatePickerComponent v-model="formState.vigor" />
-      </a-form-item>
-
-      <a-form-item label="Percentual" name="percentual" :rules="[{ type: 'number' }]">
-        <a-input-number
-          v-model:value="formState.percentual"
-          :min="0"
-          :max="100"
-          :formatter="(value) => `${value}%`"
-          :parser="(value) => value.replace('%', '')"
+      <a-form-item label="Produto" name="produto" :rules="[{ required: true }]">
+        <PesquisaRegistroComponenteView
+          :codigo="1"
+          :registro="formState.produto"
+          @outRegistro="onProduto"
         />
       </a-form-item>
 
-      <a-collapse v-model:activeKey="activePanelKey" accordion v-if="codigoRegistro">
-        <a-collapse-panel key="1" header="Produtos">
-          <template #extra>
-            <a-button
-              @click="handleNovoTabelaPrecoProduto"
-              :icon="h(PlusCircleOutlined)"
-              type="primary"
-              v-if="activePanelKey == 1"
-              >{{
-            }}</a-button>
-          </template>
-
-          <TabelaPrecoProdutoLista :codigo="codigoRegistro" ref="tabelaPrecoProdutoLista" />
-        </a-collapse-panel>
-      </a-collapse>
+      <a-form-item label="Valor" name="valor" :rules="[{ required: true }]">
+        <a-input-number v-model:value="formState.valor" :min="0" :step="0.01" string-mode />
+      </a-form-item>
     </a-form>
   </a-drawer>
 </template>

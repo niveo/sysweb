@@ -96,7 +96,7 @@ const validateMessages = validateMessagesForm
       </a-form-item>
 
       <a-collapse v-model:activeKey="activePanelKey" accordion v-if="codigoRegistro">
-        <a-collapse-panel key="1" header="Barra">
+        <a-collapse-panel key="1" header="Lançamentos">
           <template #extra>
             <a-button
               @click="handleNovoTabelaPrecoLancamento"

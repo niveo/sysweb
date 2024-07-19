@@ -5,11 +5,11 @@ const activeKey = ref('1')
 <template>
   <a-tabs v-model:activeKey="activeKey">
     <a-tab-pane key="1" tab="Clientes">
-      <SegmentoClientePesquisaView tipoEdicao />
-      <RedeClientePesquisaView tipoEdicao />
+      <PesquisaRegistroComponenteView :codigo="9" tipoEdicao />
+      <PesquisaRegistroComponenteView :codigo="8" tipoEdicao />
     </a-tab-pane>
     <a-tab-pane key="2" tab="Produtos">
-      <UnidadePesquisaView tipoEdicao />
+      <PesquisaRegistroComponenteView :codigo="7" tipoEdicao />
     </a-tab-pane>
   </a-tabs>
 </template>

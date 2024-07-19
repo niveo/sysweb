@@ -5,7 +5,7 @@ import type { DrawerProps } from 'ant-design-vue'
 import type { PagedModel } from '../../model/PagedModel'
 import { useRouter } from 'vue-router'
 import { lancarPaginaErro } from '@/common/utils'
-import { ConfiguracaoGradeServiceKey } from '@/service/key/ConfiguracaoGradeServiceKey'
+import { ConfiguracaoPesquisaServiceKey } from '@/service/key/ConfiguracaoPesquisaServiceKey'
 import api from '@/api'
 const props = defineProps({
   codigo: {
@@ -15,7 +15,7 @@ const props = defineProps({
 })
 
 const router = useRouter()
-const confService = inject<any>(ConfiguracaoGradeServiceKey)!!
+const confService = inject<any>(ConfiguracaoPesquisaServiceKey)!!
 const open = ref<boolean>(true)
 const placement = ref<DrawerProps['placement']>('left')
 const page = reactive<PagedModel>({})
@@ -52,7 +52,7 @@ const onCarregarRegistros = (currentPage = 1) => {
 }
 
 function onIncluir() {
-  router.push({ name: config.caminhoInserir })
+  router.push({ name: config.grade.caminhoInserir })
 }
 
 let formItens: any[] = []
@@ -141,7 +141,7 @@ onMounted(() => {
     <div style="width: 100%; height: 100%; background-color: rgb(236, 236, 236)">
       <a-list item-layout="vertical" size="large" :data-source="page.content">
         <template #renderItem="{ item }">
-          <component :is="config.listaItem" :model="item" v-if="config" />
+          <component :is="config.grade.listaItem" :model="item" v-if="config" />
         </template>
       </a-list>
     </div>
